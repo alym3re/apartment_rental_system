@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .profile-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .profile-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        padding: 2.5rem 2rem 2rem 2rem;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    .profile-title {
+        font-weight: 700;
+        color: var(--charcoal);
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    .profile-btn {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.65rem 1.5rem;
+        font-size: 1rem;
+        margin-bottom: 0;
+        transition: background 0.2s, color 0.2s;
+        width: 100%;
+    }
+    .profile-btn:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    @media (max-width: 768px) {
+        .profile-card {
+            padding: 1.5rem 0.5rem 1rem 0.5rem;
+        }
+    }
+</style>
+<div class="profile-container">
+    <div class="profile-card">
+        <h2 class="profile-title">Profile</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="profile-btn">Update Profile</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

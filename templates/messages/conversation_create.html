@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block title %}Start New Conversation{% endblock %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .conv-create-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        max-width: 700px;
+        margin: 2.5rem auto 0 auto;
+    }
+    .conv-create-title {
+        font-weight: 700;
+        color: var(--charcoal);
+        margin-bottom: 1.5rem;
+    }
+    .conv-create-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        padding: 2rem 2rem 1.5rem 2rem;
+    }
+    .conv-create-label {
+        font-weight: 600;
+        color: var(--charcoal);
+        margin-bottom: 0.25rem;
+    }
+    .conv-create-btn-primary {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.65rem 1.5rem;
+        font-size: 1rem;
+        margin-bottom: 0;
+        transition: background 0.2s, color 0.2s;
+        margin-right: 0.5rem;
+    }
+    .conv-create-btn-primary:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .conv-create-btn-secondary {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: 2px solid var(--neutral-gray);
+        padding: 0.65rem 1.5rem;
+        transition: border 0.2s, color 0.2s, background 0.2s;
+    }
+    .conv-create-btn-secondary:hover {
+        border: 2px solid var(--kiwi-green);
+        color: var(--kiwi-green);
+        background: var(--sage-beige);
+    }
+    .conv-create-dropdown .dropdown-toggle {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border-radius: 12px;
+        border: 2px solid var(--sage-beige);
+        font-weight: 500;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.06);
+        padding: 0.65rem 1rem;
+        width: 100%;
+        text-align: left;
+    }
+    .conv-create-dropdown .dropdown-toggle:after {
+        float: right;
+        margin-top: 0.5rem;
+    }
+    .conv-create-dropdown .dropdown-menu {
+        border-radius: 12px;
+        box-shadow: 0 4px 18px 0 rgba(60, 61, 66, 0.10);
+        font-family: 'Poppins', Arial, sans-serif !important;
+        border: none;
+        margin-top: 0.5rem;
+        min-width: 100%;
+        padding: 0.5rem 0.75rem;
+    }
+    .conv-create-dropdown .form-check {
+        margin-bottom: 0.25rem;
+    }
+    .conv-create-dropdown .form-check-label {
+        font-weight: 500;
+        color: var(--charcoal);
+    }
+    .conv-create-dropdown .form-check-input {
+        margin-right: 0.5rem;
+    }
+    @media (max-width: 768px) {
+        .conv-create-card {
+            padding: 1rem 0.5rem 1rem 0.5rem;
+        }
+    }
+</style>
+<div class="conv-create-container">
+    <div class="conv-create-card">
+        <h2 class="conv-create-title">Start New Conversation</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="conv-create-label" for="id_subject">{{ form.subject.label }}</label>
+                {{ form.subject }}
+            </div>
+            <div class="mb-3 conv-create-dropdown" id="participants-dropdown">
+                <label class="conv-create-label">{{ form.participants.label }}</label>
+                <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span id="selected-participants">Select participants</span>
+                </button>
+                <ul class="dropdown-menu w-100 p-2" aria-labelledby="dropdownMenuButton" style="max-height: 250px; overflow-y: auto;">
+                    {% for checkbox in form.participants %}
+                    <li class="form-check">
+                        {{ checkbox.tag }}
+                        <label class="form-check-label ms-1" for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const dropdown = document.getElementById('participants-dropdown');
+                const checkboxes = dropdown.querySelectorAll('input[type="checkbox"]');
+                const selectedSpan = document.getElementById('selected-participants');
+                function updateSelected() {
+                    const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.nextElementSibling.textContent.trim());
+                    selectedSpan.textContent = selected.length ? selected.join(', ') : 'Select participants';
+                }
+                checkboxes.forEach(cb => cb.addEventListener('change', updateSelected));
+                updateSelected();
+            });
+            </script>
+            <div class="mb-3">
+                <label class="conv-create-label" for="id_initial_message">Initial Message</label>
+                <textarea name="initial_message" id="id_initial_message" rows="5" style="width:100%;border-radius:12px;border:2px solid var(--sage-beige);padding:0.65rem 1rem;font-family:'Poppins',Arial,sans-serif;"></textarea>
+            </div>
+            <button type="submit" class="conv-create-btn-primary">Start Conversation</button>
+            <a href="{% url 'conversation_list' %}" class="conv-create-btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

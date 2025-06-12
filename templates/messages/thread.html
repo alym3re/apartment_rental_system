@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% block title %}Conversation{% endblock %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .thread-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        max-width: 700px;
+        margin: 2.5rem auto 0 auto;
+    }
+    .thread-title {
+        font-weight: 700;
+        color: var(--charcoal);
+        margin-bottom: 2.5rem;
+    }
+    .thread-back-btn {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: 2px solid var(--neutral-gray);
+        margin-bottom: 2.5rem;
+        margin-top: 0.5rem;
+        padding: 0.65rem 1.5rem;
+        transition: border 0.2s, color 0.2s, background 0.2s;
+        display: inline-block;
+    }
+    .thread-back-btn:hover {
+        border: 2px solid var(--kiwi-green);
+        color: var(--kiwi-green);
+        background: var(--sage-beige);
+    }
+    .thread-chat-card {
+        background: var(--soft-cream);
+        border-radius: 18px;
+        box-shadow: 0 2px 12px 0 rgba(60, 61, 66, 0.08);
+        border: none;
+        margin-bottom: 2rem;
+        height: 400px;
+        overflow-y: auto;
+        padding: 1.5rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        scrollbar-width: thin;
+        scrollbar-color: var(--kiwi-green) var(--soft-cream);
+    }
+    .thread-chat-card::-webkit-scrollbar {
+        width: 10px;
+        background: var(--soft-cream);
+        border-radius: 8px;
+    }
+    .thread-chat-card::-webkit-scrollbar-thumb {
+        background: var(--kiwi-green);
+        border-radius: 8px;
+    }
+    .thread-chat-card::-webkit-scrollbar-thumb:hover {
+        background: var(--success-olive);
+    }
+    .thread-message-row {
+        display: flex;
+        margin-bottom: 0.5rem;
+    }
+    .thread-message-bubble {
+        max-width: 70%;
+        padding: 0.75rem 1.1rem;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.10);
+        font-size: 1rem;
+        word-break: break-word;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    .thread-message-bubble.user {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        margin-left: auto;
+        border-bottom-right-radius: 4px;
+    }
+    .thread-message-bubble.other {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        margin-right: auto;
+        border-bottom-left-radius: 4px;
+        border: 1.5px solid var(--sage-beige);
+    }
+    .thread-message-meta {
+        font-size: 0.85rem;
+        color: var(--neutral-gray);
+        font-weight: 500;
+    }
+    .thread-empty {
+        text-align: center;
+        color: var(--neutral-gray);
+        font-weight: 500;
+        margin-top: 2rem;
+    }
+    .thread-form {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+    }
+    .thread-form textarea, .thread-form input[type="text"] {
+        flex: 1 1 auto;
+        border-radius: 12px;
+        border: 2px solid var(--sage-beige);
+        padding: 0.65rem 1rem;
+        font-family: 'Poppins', Arial, sans-serif;
+        font-size: 1rem;
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.06);
+        transition: border 0.2s, box-shadow 0.2s;
+        outline: none;
+    }
+    .thread-form textarea:focus, .thread-form input[type="text"]:focus {
+        border: 2px solid var(--kiwi-green);
+        box-shadow: 0 0 0 2px rgba(156, 205, 98, 0.15);
+    }
+    .thread-send-btn {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.65rem 1.5rem;
+        font-size: 1rem;
+        transition: background 0.2s, color 0.2s;
+    }
+    .thread-send-btn:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+</style>
+<div class="thread-container">
+    <h2 class="thread-title">{{ conversation.subject }}</h2>
+    <a href="{% url 'conversation_list' %}" class="thread-back-btn">Back to Conversations</a>
+    <div class="thread-chat-card" id="chat-messages">
+        {% for msg in messages_qs %}
+            <div class="thread-message-row {% if msg.sender == user %}justify-content-end{% else %}justify-content-start{% endif %}">
+                <div class="thread-message-bubble {% if msg.sender == user %}user{% else %}other{% endif %}">
+                    <div class="thread-message-meta">{{ msg.sender.get_full_name|default:msg.sender.username }} | {{ msg.created_at|date:'SHORT_DATETIME_FORMAT' }}</div>
+                    <div>{{ msg.content }}</div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="thread-empty">No messages yet.</div>
+        {% endfor %}
+    </div>
+    <form method="post" class="thread-form">
+        {% csrf_token %}
+        {{ form.content }}
+        <button type="submit" class="thread-send-btn">Send</button>
+    </form>
+</div>
+<script>
+const chatMessages = document.getElementById('chat-messages');
+if (chatMessages) {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+</script>
+{% endblock %}

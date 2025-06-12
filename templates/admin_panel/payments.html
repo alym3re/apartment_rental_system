@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+{% block title %}Payments Management{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .payments-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .payments-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        margin-bottom: 2rem;
+    }
+    .payments-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 20px 20px 0 0;
+        padding: 1.25rem 2rem 1rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .payments-header h6 {
+        font-weight: 700;
+        margin: 0;
+    }
+    .payments-body {
+        padding: 2rem;
+    }
+    .payments-table {
+        background: var(--soft-cream);
+        border-radius: 16px;
+        overflow: hidden;
+        font-size: 1rem;
+        box-shadow: 0 2px 12px 0 rgba(60, 61, 66, 0.08);
+    }
+    .payments-table th {
+        background: var(--sage-beige);
+        color: var(--charcoal);
+        font-weight: 600;
+        border: none;
+    }
+    .payments-table td {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border: none;
+        vertical-align: middle;
+    }
+    .payments-badge-success {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .payments-badge-danger {
+        background: var(--error-red);
+        color: var(--cloud-white);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .payments-badge-warning {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .payments-btn-primary {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 0.45rem 1.1rem;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.08);
+        border: none;
+        transition: background 0.2s, color 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .payments-btn-primary:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .dropdown-menu {
+        border-radius: 12px;
+        box-shadow: 0 4px 18px 0 rgba(60, 61, 66, 0.10);
+        font-family: 'Poppins', Arial, sans-serif !important;
+        border: none;
+        margin-top: 0.5rem;
+    }
+    .dropdown-item {
+        color: var(--charcoal);
+        border-radius: 8px;
+        font-weight: 500;
+        transition: background 0.2s, color 0.2s;
+    }
+    .dropdown-item:hover,
+    .dropdown-item:focus {
+        background-color: var(--sage-beige);
+        color: var(--kiwi-green);
+    }
+    .pagination .page-link {
+        border-radius: 8px !important;
+        color: var(--charcoal);
+        font-weight: 600;
+        border: none;
+        margin: 0 0.15rem;
+        background: var(--sage-beige);
+        transition: background 0.2s, color 0.2s;
+    }
+    .pagination .page-item.active .page-link {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border: none;
+    }
+    .pagination .page-link:hover {
+        background: var(--kiwi-green);
+        color: var(--cloud-white);
+    }
+    @media (max-width: 768px) {
+        .payments-body {
+            padding: 1rem;
+        }
+    }
+</style>
+<div class="payments-container">
+    <div class="payments-card">
+        <div class="payments-header">
+            <h6>All Payments</h6>
+            <div class="dropdown no-arrow">
+                <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown">
+                    <i class="bi bi-three-dots-vertical"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end shadow">
+                    <a class="dropdown-item" href="#">Export to Excel</a>
+                    <a class="dropdown-item" href="#">Print Report</a>
+                </div>
+            </div>
+        </div>
+        <div class="payments-body">
+            <div class="table-responsive">
+                <table class="table payments-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Tenant</th>
+                            <th>Unit</th>
+                            <th>Amount</th>
+                            <th>Payment Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in page_obj %}
+                        <tr>
+                            <td>{{ payment.lease.tenant.get_full_name }}</td>
+                            <td>{{ payment.lease.unit.name }}</td>
+                            <td>₱{{ payment.amount }}</td>
+                            <td>{{ payment.payment_date|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="{% if payment.status == payment.APPROVED %}payments-badge-success{% elif payment.status == payment.REJECTED %}payments-badge-danger{% else %}payments-badge-warning{% endif %}">
+                                    {{ payment.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'admin_payment_detail' payment.id %}" class="payments-btn-primary">
+                                    <i class="bi bi-eye"></i> Review
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <!-- Pagination -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block title %}Application Status{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .app-status-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .app-status-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        margin-bottom: 2rem;
+    }
+    .app-status-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 20px 20px 0 0;
+        padding: 1.5rem 2rem 1rem 2rem;
+    }
+    .app-status-header h3 {
+        font-weight: 700;
+        margin: 0;
+    }
+    .app-status-body {
+        padding: 2rem;
+    }
+    .app-status-table {
+        background: var(--soft-cream);
+        border-radius: 16px;
+        overflow: hidden;
+        font-size: 1rem;
+        box-shadow: 0 2px 12px 0 rgba(60, 61, 66, 0.08);
+    }
+    .app-status-table th {
+        background: var(--sage-beige);
+        color: var(--charcoal);
+        font-weight: 600;
+        border: none;
+    }
+    .app-status-table td {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border: none;
+        vertical-align: middle;
+    }
+    .app-status-badge-success {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .app-status-badge-danger {
+        background: var(--error-red);
+        color: var(--cloud-white);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .app-status-badge-warning {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .app-status-btn-outline {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border-radius: 12px;
+        font-weight: 600;
+        border: 2px solid var(--neutral-gray);
+        padding: 0.5rem 1.25rem;
+        font-size: 1rem;
+        transition: border 0.2s, color 0.2s, background 0.2s;
+    }
+    .app-status-btn-outline:hover {
+        border: 2px solid var(--kiwi-green);
+        color: var(--kiwi-green);
+        background: var(--sage-beige);
+    }
+    .modal-content {
+        border-radius: 18px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        font-family: 'Poppins', Arial, sans-serif !important;
+    }
+    .modal-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 18px 18px 0 0;
+    }
+    .modal-title {
+        font-weight: 700;
+    }
+    .modal-footer .btn {
+        border-radius: 10px;
+        font-weight: 600;
+    }
+    .alert-info {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        border: none;
+        font-weight: 500;
+    }
+    @media (max-width: 768px) {
+        .app-status-body {
+            padding: 1rem;
+        }
+    }
+</style>
+<div class="row justify-content-center app-status-container">
+    <div class="col-md-8">
+        <div class="app-status-card">
+            <div class="app-status-header">
+                <h3 class="mb-0">Your Applications</h3>
+            </div>
+            <div class="app-status-body">
+                {% if applications %}
+                    <div class="table-responsive">
+                        <table class="table app-status-table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Unit</th>
+                                    <th>Applied Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for application in applications %}
+                                    <tr>
+                                        <td>{{ application.unit.name }}</td>
+                                        <td>{{ application.applied_date|date:"M d, Y" }}</td>
+                                        <td>
+                                            <span class="{% if application.status == application.APPROVED %}app-status-badge-success{% elif application.status == application.REJECTED %}app-status-badge-danger{% else %}app-status-badge-warning{% endif %}">
+                                                {{ application.get_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <button class="app-status-btn-outline btn btn-sm" data-bs-toggle="modal" data-bs-target="#applicationModal{{ application.id }}">
+                                                View Details
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Application Modal -->
+                                    <div class="modal fade" id="applicationModal{{ application.id }}" tabindex="-1" aria-labelledby="applicationModalLabel{{ application.id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="applicationModalLabel{{ application.id }}">Application for {{ application.unit.name }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p><strong>Status:</strong> 
+                                                        <span class="{% if application.status == application.APPROVED %}app-status-badge-success{% elif application.status == application.REJECTED %}app-status-badge-danger{% else %}app-status-badge-warning{% endif %}">
+                                                            {{ application.get_status_display }}
+                                                        </span>
+                                                    </p>
+                                                    <p><strong>Applied Date:</strong> {{ application.applied_date|date:"M d, Y" }}</p>
+                                                    {% if application.processed_date %}
+                                                        <p><strong>Processed Date:</strong> {{ application.processed_date|date:"M d, Y" }}</p>
+                                                    {% endif %}
+                                                    <hr>
+                                                    <h6>Application Details</h6>
+                                                    <p><strong>Full Name:</strong> {{ application.full_name }}</p>
+                                                    <p><strong>Address:</strong> {{ application.address }}</p>
+                                                    <p><strong>Contact Number:</strong> {{ application.contact_number }}</p>
+                                                    <p><strong>Email:</strong> {{ application.email }}</p>
+                                                    {% if application.facebook_account %}
+                                                        <p><strong>Facebook:</strong> {{ application.facebook_account }}</p>
+                                                    {% endif %}
+                                                    <p><strong>Occupation:</strong> {{ application.occupation }}</p>
+                                                    <p><strong>Number of People:</strong> {{ application.number_of_people }}</p>
+                                                    {% if application.notes %}
+                                                        <hr>
+                                                        <h6>Admin Notes</h6>
+                                                        <p>{{ application.notes }}</p>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">
+                        You haven't submitted any applications yet.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

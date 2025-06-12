@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Message{% endblock %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .msg-detail-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        max-width: 700px;
+        margin: 2.5rem auto 0 auto;
+    }
+    .msg-detail-alert {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        border: none;
+        font-weight: 500;
+        margin-bottom: 2rem;
+        padding: 1.25rem 1.5rem;
+    }
+    .msg-detail-back-btn {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: 2px solid var(--neutral-gray);
+        margin-bottom: 2.5rem;
+        margin-top: 2.5rem;
+        padding: 0.65rem 1.5rem;
+        transition: border 0.2s, color 0.2s, background 0.2s;
+        display: inline-block;
+    }
+    .msg-detail-back-btn:hover {
+        border: 2px solid var(--kiwi-green);
+        color: var(--kiwi-green);
+        background: var(--sage-beige);
+    }
+    /* Custom scrollbar for chat/message area */
+    ::-webkit-scrollbar {
+        width: 10px;
+        background: var(--soft-cream);
+        border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: var(--kiwi-green);
+        border-radius: 8px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--success-olive);
+    }
+</style>
+<div class="msg-detail-container">
+    <h2 class="msg-detail-title" style="font-weight:700;color:var(--charcoal);margin-bottom:2rem;">Message Details</h2>
+    <a href="{% url 'tenant_messages' %}" class="msg-detail-back-btn">Back to Conversations</a>
+    <div class="msg-detail-alert">
+        Please use the chat interface for replies.
+    </div>
+    <!-- Example scrollable conversation area with custom scrollbar -->
+    <div class="msg-detail-convo-area" style="height:180px;overflow-y:auto;background:var(--soft-cream);border-radius:14px;padding:1rem;margin-top:2rem;box-shadow:0 2px 8px 0 rgba(60,61,66,0.08);">
+        <div class="mb-2"><strong>{{ message.sender.get_full_name|default:'Sender Name' }}</strong> <span class="text-muted small">{{ message.created_at|default:'2024-01-01 12:00' }}</span></div>
+        <div>{{ message.content|default:'(Message content preview goes here...)' }}</div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+<footer class="py-4 mt-auto" style="background-color: var(--primary-color); color: var(--card-bg);">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Apartment Rental System</h5>
+                <p>A modern solution for property management and rental applications.</p>
+            </div>
+            <div class="col-md-3">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'home' %}" style="color: var(--card-bg); text-decoration: none;">Home</a></li>
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'dashboard' %}" style="color: var(--card-bg); text-decoration: none;">Dashboard</a></li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}" style="color: var(--card-bg); text-decoration: none;">Login</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h5>Contact</h5>
+                <address>
+                    <i class="bi bi-geo-alt"></i> 123 Rental St, City<br>
+                    <i class="bi bi-telephone"></i> (123) 456-7890<br>
+                    <i class="bi bi-envelope"></i> info@rentalsystem.com
+                </address>
+            </div>
+        </div>
+        <hr style="border-color: var(--border-color);">
+        <div class="text-center">
+            <p class="mb-0">&copy; {% now "Y" %} Apartment Rental System. All rights reserved.</p>
+        </div>
+    </div>
+</footer>

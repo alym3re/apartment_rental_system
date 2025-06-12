@@ -1,0 +1,172 @@
+:root {
+    --charcoal: #3C3D42;         /* Headings, navbar, footer, dark buttons */
+    --kiwi-green: #9CCD62;       /* Primary buttons, highlights, status OK */
+    --soft-cream: #F6F8E2;       /* Page background, cards, modals */
+    --sage-beige: #E0DDCA;       /* Secondary UI, form backgrounds */
+    --cloud-white: #FFFFFF;      /* Card and section backgrounds */
+    --error-red: #D9534F;        /* Errors, delete buttons */
+    --sky-blue: #5BC0DE;         /* Info alerts, links */
+    --success-olive: #6BA539;    /* Approved status, confirmations */
+    --neutral-gray: #A9A9A9;     /* Disabled buttons, minor text */
+}
+
+body {
+    background-color: #f8f9fa;
+}
+
+/* Modern form input styles */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="file"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="time"],
+input[type="url"],
+input[type="search"],
+select,
+textarea {
+    font-family: 'Poppins', Arial, sans-serif;
+    background: var(--cloud-white);
+    color: var(--charcoal);
+    border: 2px solid var(--sage-beige);
+    border-radius: 12px;
+    padding: 0.65rem 1rem;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.06);
+    transition: border 0.2s, box-shadow 0.2s;
+    outline: none;
+    margin-bottom: 0.5rem;
+}
+input[type="file"] {
+    padding: 0.3rem 0.5rem;
+    background: var(--soft-cream);
+}
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="file"]:focus,
+input[type="date"]:focus,
+input[type="datetime-local"]:focus,
+input[type="time"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+select:focus,
+textarea:focus {
+    border: 2px solid var(--kiwi-green);
+    box-shadow: 0 0 0 2px rgba(156, 205, 98, 0.15);
+}
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%239CCD62" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7.293 7.293a1 1 0 011.414 0L10 8.586l1.293-1.293a1 1 0 111.414 1.414l-2 2a1 1 0 01-1.414 0l-2-2a1 1 0 010-1.414z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 1.25em;
+}
+label {
+    font-family: 'Poppins', Arial, sans-serif;
+    color: var(--charcoal);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+a {
+    text-decoration: none;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.card-header {
+    border-bottom: none;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.table th {
+    border-top: none;
+}
+
+.badge {
+    font-weight: 500;
+}
+
+/* Custom colors */
+.bg-primary {
+    background-color: #4e73df !important;
+}
+
+.btn-primary {
+    background-color: #4e73df;
+    border-color: #4e73df;
+}
+
+.btn-primary:hover {
+    background-color: #3a5ccc;
+    border-color: #3a5ccc;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.25rem;
+    }
+}
+
+/* Custom shadow for cards */
+.shadow {
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+}
+
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem 0 rgba(58, 59, 69, 0.2) !important;
+}
+
+/* Custom form styles */
+.form-control:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+
+/* Custom alert styles */
+.alert {
+    border-radius: 0.35rem;
+}
+
+/* Custom button styles */
+.btn {
+    border-radius: 0.35rem;
+    padding: 0.5rem 1rem;
+}
+
+/* Custom table styles */
+.table-hover tbody tr:hover {
+    background-color: rgba(78, 115, 223, 0.05);
+}
+
+/* Custom modal styles */
+.modal-content {
+    border-radius: 0.5rem;
+    border: none;
+}
+
+/* Custom footer styles */
+footer a {
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

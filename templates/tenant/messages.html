@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Messages{% endblock %}
+{% block content %}
+<div class="container py-4" style="max-width: 700px;">
+    <h3 class="mb-4">Conversations</h3>
+    <div class="list-group mb-4">
+        <a href="{% url 'conversation_list' %}" class="btn btn-primary mb-3">Go to Conversations</a>
+        <a href="{% url 'conversation_create' %}" class="btn btn-success mb-3">Start New Conversation</a>
+    </div>
+    <a href="javascript:history.back()" class="btn btn-link">Back</a>
+</div>
+{% endblock %}

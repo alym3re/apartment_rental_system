@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %}{{ action }} Unit{% endblock %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .unit-form-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .unit-form-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        padding: 2.5rem 2rem 2rem 2rem;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    .unit-form-title {
+        font-weight: 700;
+        color: var(--charcoal);
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    .unit-form-label {
+        font-weight: 600;
+        color: var(--charcoal);
+        margin-bottom: 0.25rem;
+    }
+    .unit-form-btn {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.65rem 1.5rem;
+        font-size: 1rem;
+        margin-bottom: 0;
+        transition: background 0.2s, color 0.2s;
+    }
+    .unit-form-btn:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .unit-form-cancel {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: 2px solid var(--neutral-gray);
+        margin-left: 0.75rem;
+        padding: 0.65rem 1.5rem;
+        transition: border 0.2s, color 0.2s, background 0.2s;
+    }
+    .unit-form-cancel:hover {
+        border: 2px solid var(--kiwi-green);
+        color: var(--kiwi-green);
+        background: var(--sage-beige);
+    }
+    .unit-form-img-preview {
+        border-radius: 10px;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.10);
+        height: 100px;
+        object-fit: cover;
+    }
+    .form-label { font-weight: 500; }
+    .form-check-label { font-weight: 500; }
+    .mb-3, .form-group {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .form-check {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .form-check-input {
+        margin-bottom: 0.5rem;
+    }
+    @media (max-width: 768px) {
+        .unit-form-card {
+            padding: 1.5rem 0.5rem 1rem 0.5rem;
+        }
+    }
+</style>
+<div class="unit-form-container">
+    <div class="unit-form-card">
+        <h2 class="unit-form-title">{{ action }} Unit</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="mb-3">
+                <label for="id_name" class="unit-form-label">Name</label>
+                {{ form.name }}
+                {{ form.name.errors }}
+            </div>
+            <div class="mb-3">
+                <label for="id_monthly_price" class="unit-form-label">Monthly Price</label>
+                {{ form.monthly_price }}
+                {{ form.monthly_price.errors }}
+            </div>
+            <div class="mb-3">
+                <label for="id_location" class="unit-form-label">Location</label>
+                {{ form.location }}
+                {{ form.location.errors }}
+            </div>
+            <div class="mb-3">
+                <label for="id_description" class="unit-form-label">Description</label>
+                {{ form.description }}
+                {{ form.description.errors }}
+            </div>
+            <div class="mb-3">
+                <label for="id_payment_inclusions" class="unit-form-label">Payment Inclusions</label>
+                {{ form.payment_inclusions }}
+                {{ form.payment_inclusions.errors }}
+            </div>
+            <div class="mb-3">
+                <label for="id_house_rules" class="unit-form-label">House Rules</label>
+                {{ form.house_rules }}
+                {{ form.house_rules.errors }}
+            </div>
+            <div class="mb-3">
+                <label for="id_main_image" class="unit-form-label">Main Image</label>
+                {{ form.main_image }}
+                {{ form.main_image.errors }}
+                {% if unit and unit.main_image %}
+                    <div class="mt-2">
+                        <img src="{{ unit.main_image.url }}" alt="Current Image" class="unit-form-img-preview">
+                    </div>
+                {% endif %}
+            </div>
+            <button type="submit" class="unit-form-btn">{{ action }} Unit</button>
+            <a href="{% url 'admin_units_list' %}" class="unit-form-cancel">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block extra_css %}{% endblock %}
+{% block extra_js %}{% endblock %}

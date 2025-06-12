@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Leave Request{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .tenant-leave-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .tenant-leave-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        margin-bottom: 2rem;
+    }
+    .tenant-leave-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 20px 20px 0 0;
+        padding: 1.25rem 2rem 1rem 2rem;
+    }
+    .tenant-leave-header h6 {
+        font-weight: 700;
+        margin: 0;
+    }
+    .tenant-leave-body {
+        padding: 2rem;
+    }
+    .tenant-leave-btn {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.65rem 1.5rem;
+        font-size: 1rem;
+        margin-bottom: 0;
+        transition: background 0.2s, color 0.2s;
+        margin-right: 0.5rem;
+    }
+    .tenant-leave-btn:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .tenant-leave-btn-secondary {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: 2px solid var(--neutral-gray);
+        padding: 0.65rem 1.5rem;
+        transition: border 0.2s, color 0.2s, background 0.2s;
+    }
+    .tenant-leave-btn-secondary:hover {
+        border: 2px solid var(--kiwi-green);
+        color: var(--kiwi-green);
+        background: var(--sage-beige);
+    }
+    .tenant-leave-info h6 {
+        color: var(--kiwi-green);
+        font-weight: 700;
+        margin-top: 1.5rem;
+    }
+    .tenant-leave-info ul {
+        padding-left: 1.2rem;
+    }
+    .tenant-leave-info li {
+        margin-bottom: 0.5rem;
+    }
+    @media (max-width: 768px) {
+        .tenant-leave-body {
+            padding: 1rem;
+        }
+    }
+</style>
+<div class="container tenant-leave-container">
+    <h1 class="h3 mb-4" style="color:var(--charcoal);font-weight:700;">Leave Request</h1>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="tenant-leave-card">
+                <div class="tenant-leave-header">
+                    <h6>Submit Leave Request</h6>
+                </div>
+                <div class="tenant-leave-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="d-flex gap-2 justify-content-start mt-4">
+                            <button type="submit" class="tenant-leave-btn">Submit Request</button>
+                            <a href="{% url 'tenant_dashboard' %}" class="tenant-leave-btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="tenant-leave-card tenant-leave-info">
+                <div class="tenant-leave-header">
+                    <h6>Lease Information</h6>
+                </div>
+                <div class="tenant-leave-body">
+                    <h6>Current Lease</h6>
+                    <p><strong>Unit:</strong> {{ lease.unit.name }}</p>
+                    <p><strong>Start Date:</strong> {{ lease.start_date|date:"M d, Y" }}</p>
+                    <p><strong>Monthly Rent:</strong> ₱{{ lease.monthly_rent }}</p>
+                    <hr>
+                    <h6>Leave Policy</h6>
+                    <ul>
+                        <li>30 days notice required</li>
+                        <li>Final payment must be settled</li>
+                        <li>Unit inspection required</li>
+                        <li>Security deposit refund processed within 14 days</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+
+{% block title %}Available Units
+{% endblock %}
+
+{% block content %}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<style>
+    
+
+    #panorama { width: 600px; height: 400px; }
+
+    .units-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .units-title {
+        font-weight: 700;
+        color: var(--charcoal);
+        margin-bottom: 2rem;
+    }
+    .units-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 18px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        transition: box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .units-card:hover {
+        box-shadow: 0 8px 32px 0 rgba(60, 61, 66, 0.16);
+    }
+    .units-card-img {
+        width: 100%;
+        display: block;
+        border-radius: 20px 20px 0 0;
+        height: 200px;
+        object-fit: cover;
+        margin: 0;
+        padding: 0;
+    }
+    .units-card-title {
+        font-weight: 700;
+        color: var(--charcoal);
+    }
+    .units-card-body {
+        padding: 1.25rem 1.25rem 1.5rem 1.25rem;
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .units-card-btn-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1.25rem;
+        gap: 0.5rem;
+    }
+    .units-card-subtitle {
+        color: var(--kiwi-green);
+        font-weight: 600;
+    }
+    .units-card-location {
+        color: var(--neutral-gray);
+        font-size: 1rem;
+    }
+    .units-btn-primary {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 12px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.5rem 1.25rem;
+        font-size: 1rem;
+        margin-left: 0.5rem;
+        transition: background 0.2s, color 0.2s;
+    }
+    .units-btn-primary:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .units-btn-outline {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border-radius: 12px;
+        font-weight: 600;
+        border: 2px solid var(--neutral-gray);
+        padding: 0.5rem 1.25rem;
+        font-size: 1rem;
+        margin-right: 0.5rem;
+        transition: border 0.2s, color 0.2s, background 0.2s;
+    }
+    .units-btn-outline:hover {
+        border: 2px solid var(--kiwi-green);
+        color: var(--kiwi-green);
+        background: var(--sage-beige);
+    }
+    .modal-content {
+        border-radius: 18px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        font-family: 'Poppins', Arial, sans-serif !important;
+    }
+    .modal-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 18px 18px 0 0;
+    }
+    .modal-title {
+        font-weight: 700;
+    }
+    .modal-footer .btn {
+        border-radius: 10px;
+        font-weight: 600;
+    }
+    .alert-info {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        border: none;
+        font-weight: 500;
+    }
+    @media (max-width: 768px) {
+        .units-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+<div class="units-container">
+    <h2 class="units-title">Available Units</h2>
+    {% if units %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for unit in units %}
+                <div class="col">
+                    <div class="units-card h-100">
+                        <!-- 3D Panorama Viewer -->
+                        <img id="fallback-img-{{ unit.id }}" src="{{ unit.main_image.url }}" class="units-card-img panorama-clickable" alt="{{ unit.name }}" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#mainPanoramaModal{{ unit.id }}">
+                        <!-- Main Panorama Modal -->
+                        <div class="modal fade" id="mainPanoramaModal{{ unit.id }}" tabindex="-1" aria-labelledby="mainPanoramaModalLabel{{ unit.id }}" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="mainPanoramaModalLabel{{ unit.id }}">{{ unit.name }} - 3D View</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                {% for unit in units %}
+                                    <div id="panorama-{{ unit.id }}" style="width:600px; height:400px; margin:2rem auto;"></div>
+                                    <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        pannellum.viewer('panorama-{{ unit.id }}', {
+                                            "type": "equirectangular",
+                                            "panorama": "{{ unit.main_image.url }}"
+                                        });
+                                    });
+                                    </script>
+                                {% endfor %}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="units-card-body">
+                            <h5 class="units-card-title">{{ unit.name }}</h5>
+                            <h6 class="units-card-subtitle mb-2">₱{{ unit.monthly_price|floatformat:2 }}/month</h6>
+                            <p class="units-card-location">
+                                <i class="bi bi-geo-alt"></i> {{ unit.location }}
+                            </p>
+                            <div class="units-card-btn-row">
+                                <button class="units-btn-outline btn btn-sm" data-bs-toggle="modal" data-bs-target="#unitModal{{ unit.id }}">
+                                    View Details
+                                </button>
+                                <a href="{% url 'client_unit_detail' unit.id %}" class="units-btn-primary btn btn-sm">
+                                    Apply Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Unit Modal -->
+                <div class="modal fade" id="unitModal{{ unit.id }}" tabindex="-1" aria-labelledby="unitModalLabel{{ unit.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="unitModalLabel{{ unit.id }}">{{ unit.name }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <!-- 3D Panorama Viewer in Modal -->
+                                        <div id="modal-panorama-viewer-{{ unit.id }}" class="img-fluid rounded mb-3" style="height:250px;display:none;"></div>
+                                        <img id="modal-fallback-img-{{ unit.id }}" src="{{ unit.main_image.url }}" class="img-fluid rounded mb-3" alt="{{ unit.name }}">
+                                        <div class="row g-2">
+                                            {% for image in unit.images.all %}
+                                                <div class="col-4">
+                                                    <img src="{{ image.image.url }}" class="img-thumbnail" alt="{{ image.caption|default:unit.name }}">
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="text-primary">₱{{ unit.monthly_price|floatformat:2 }} <small class="text-muted">/month</small></h5>
+                                        <p><i class="bi bi-geo-alt"></i> {{ unit.location }}</p>
+                                        <h6 class="mt-4">Description</h6>
+                                        <p>{{ unit.description }}</p>
+                                        <h6 class="mt-4">Payment Inclusions</h6>
+                                        <p>{{ unit.payment_inclusions }}</p>
+                                        <h6 class="mt-4">House Rules</h6>
+                                        <p>{{ unit.house_rules }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <a href="{% url 'client_unit_detail' unit.id %}" class="units-btn-primary btn btn-sm">Apply Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No available units at the moment. Please check back later.
+        </div>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+{% endblock %}

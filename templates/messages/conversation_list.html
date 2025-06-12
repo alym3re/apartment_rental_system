@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block title %}Conversations{% endblock %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .conv-list-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        max-width: 700px;
+        margin: 2.5rem auto 0 auto;
+    }
+    .conv-list-title {
+        font-weight: 700;
+        color: var(--charcoal);
+        margin-bottom: 1.5rem;
+    }
+    .conv-list-btn {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.65rem 1.5rem;
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        transition: background 0.2s, color 0.2s;
+    }
+    .conv-list-btn:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .conv-list-group {
+        border-radius: 16px;
+        box-shadow: 0 2px 12px 0 rgba(60, 61, 66, 0.08);
+        overflow: hidden;
+        background: var(--soft-cream);
+    }
+    .conv-list-item {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border: none;
+        border-bottom: 1px solid var(--sage-beige);
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background 0.2s;
+    }
+    .conv-list-item:last-child {
+        border-bottom: none;
+    }
+    .conv-list-item:hover {
+        background: var(--sage-beige);
+    }
+    .conv-list-link {
+        color: var(--charcoal);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+    .conv-list-link:hover {
+        color: var(--kiwi-green);
+        text-decoration: underline;
+    }
+    .conv-list-badge {
+        background: var(--sky-blue);
+        color: var(--cloud-white);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .conv-list-empty {
+        background: var(--sage-beige);
+        color: var(--charcoal);
+        border-radius: 12px;
+        padding: 1.25rem 1.5rem;
+        text-align: center;
+        font-weight: 500;
+    }
+</style>
+<div class="conv-list-container">
+    <h2 class="conv-list-title">Conversations</h2>
+    <a href="{% url 'conversation_create' %}" class="conv-list-btn">Start New Conversation</a>
+    <div class="conv-list-group">
+        <ul class="list-unstyled mb-0">
+            {% for conversation in conversations %}
+                <li class="conv-list-item">
+                    <a href="{% url 'conversation_thread' conversation.id %}" class="conv-list-link">
+                        <strong>{{ conversation.subject }}</strong><br>
+                        <small>With {% for participant in conversation.participants.all %}{% if participant != user %}{% if participant.get_full_name %}{{ participant.get_full_name }}{% else %}{{ participant.username }}{% endif %} {% endif %}{% endfor %}</small>
+                    </a>
+                    <span class="conv-list-badge">{{ conversation.messages.count }} messages</span>
+                </li>
+            {% empty %}
+                <li class="conv-list-empty">No conversations yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Submit Payment{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .submit-payment-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .submit-payment-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        margin-bottom: 2rem;
+    }
+    .submit-payment-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 20px 20px 0 0;
+        padding: 1.25rem 2rem 1rem 2rem;
+    }
+    .submit-payment-header h6 {
+        font-weight: 700;
+        margin: 0;
+    }
+    .submit-payment-body {
+        padding: 2rem;
+    }
+    .submit-payment-btn {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.65rem 1.5rem;
+        font-size: 1rem;
+        margin-bottom: 0;
+        transition: background 0.2s, color 0.2s;
+        margin-right: 0.5rem;
+    }
+    .submit-payment-btn:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .submit-payment-btn-secondary {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: 2px solid var(--neutral-gray);
+        padding: 0.65rem 1.5rem;
+        transition: border 0.2s, color 0.2s, background 0.2s;
+    }
+    .submit-payment-btn-secondary:hover {
+        border: 2px solid var(--kiwi-green);
+        color: var(--kiwi-green);
+        background: var(--sage-beige);
+    }
+    .submit-payment-instructions h6 {
+        color: var(--kiwi-green);
+        font-weight: 700;
+        margin-top: 1.5rem;
+    }
+    .submit-payment-instructions ul {
+        padding-left: 1.2rem;
+    }
+    .submit-payment-instructions li {
+        margin-bottom: 0.5rem;
+    }
+    @media (max-width: 768px) {
+        .submit-payment-body {
+            padding: 1rem;
+        }
+    }
+</style>
+<div class="container submit-payment-container">
+    <h1 class="h3 mb-4" style="color:var(--charcoal);font-weight:700;">Submit Payment</h1>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="submit-payment-card">
+                <div class="submit-payment-header">
+                    <h6>Payment Information</h6>
+                </div>
+                <div class="submit-payment-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <div class="d-flex gap-2 justify-content-start mt-4">
+                            <button type="submit" class="submit-payment-btn">Submit Payment</button>
+                            <a href="{% url 'tenant_dashboard' %}" class="submit-payment-btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="submit-payment-card submit-payment-instructions">
+                <div class="submit-payment-header">
+                    <h6>Payment Instructions</h6>
+                </div>
+                <div class="submit-payment-body">
+                    <h6>Bank Transfer</h6>
+                    <p>Bank Name: Example Bank<br>
+                    Account Name: Apartment Rental<br>
+                    Account Number: 1234567890</p>
+                    <h6>Cash Payment</h6>
+                    <p>Please visit the property manager's office during business hours.</p>
+                    <h6>Important Notes</h6>
+                    <ul>
+                        <li>Payments may take 1-2 business days to process</li>
+                        <li>Always include your unit number as reference</li>
+                        <li>Upload clear photo of receipt for faster processing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

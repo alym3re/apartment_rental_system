@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% block title %}Leave Requests Review{% endblock %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .leave-requests-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .leave-requests-table {
+        background: var(--soft-cream);
+        border-radius: 16px;
+        overflow: hidden;
+        font-size: 1rem;
+        box-shadow: 0 2px 12px 0 rgba(60, 61, 66, 0.08);
+    }
+    .leave-requests-table th {
+        background: var(--sage-beige);
+        color: var(--charcoal);
+        font-weight: 600;
+        border: none;
+    }
+    .leave-requests-table td {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border: none;
+        vertical-align: middle;
+    }
+    .leave-badge-success {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .leave-badge-danger {
+        background: var(--error-red);
+        color: var(--cloud-white);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .leave-badge-warning {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .leave-btn-success {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 0.45rem 1.1rem;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.08);
+        border: none;
+        transition: background 0.2s, color 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-right: 0.25rem;
+    }
+    .leave-btn-success:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .leave-btn-danger {
+        background: var(--error-red);
+        color: var(--cloud-white);
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 0.45rem 1.1rem;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.08);
+        border: none;
+        transition: background 0.2s, color 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .leave-btn-danger:hover {
+        background: #b52d2a;
+        color: var(--cloud-white);
+    }
+    .alert-info {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        border: none;
+        font-weight: 500;
+    }
+    @media (max-width: 768px) {
+        .leave-requests-table {
+            font-size: 0.95rem;
+        }
+    }
+</style>
+<div class="leave-requests-container">
+    <h1 class="h3 mb-4" style="color:var(--charcoal);font-weight:700;">Leave Requests Review</h1>
+    {% if leave_requests %}
+    <div class="table-responsive">
+        <table class="table leave-requests-table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Tenant</th>
+                    <th>Unit</th>
+                    <th>Requested End Date</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Submitted</th>
+                    <th>Processed</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for leave in leave_requests %}
+                <tr>
+                    <td>{{ leave.tenant.get_full_name }}</td>
+                    <td>{{ leave.lease.unit.name }}</td>
+                    <td>{{ leave.requested_end_date }}</td>
+                    <td>{{ leave.reason|linebreaksbr }}</td>
+                    <td>
+                        {% if leave.status == leave.PENDING %}
+                            <span class="leave-badge-warning">Pending</span>
+                        {% elif leave.status == leave.APPROVED %}
+                            <span class="leave-badge-success">Approved</span>
+                        {% else %}
+                            <span class="leave-badge-danger">Denied</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ leave.created_at|date:'Y-m-d H:i' }}</td>
+                    <td>{% if leave.processed_at %}{{ leave.processed_at|date:'Y-m-d H:i' }}{% else %}-{% endif %}</td>
+                    <td>
+                        {% if leave.status == leave.PENDING %}
+                        <form method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="leave_id" value="{{ leave.id }}">
+                            <button name="action" value="accept" class="leave-btn-success" onclick="return confirm('Accept this leave request?')">Accept</button>
+                            <button name="action" value="deny" class="leave-btn-danger" onclick="return confirm('Deny this leave request?')">Deny</button>
+                        </form>
+                        {% else %}
+                            <span class="text-muted">No actions</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="alert alert-info">No leave requests found.</div>
+    {% endif %}
+</div>
+{% endblock %}

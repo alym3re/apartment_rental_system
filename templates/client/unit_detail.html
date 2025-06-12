@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Apply for {{ unit.name }}<!-- Pannellum 360 Viewer JS/CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Make the main image clickable to open the modal
+    var panoImg = document.getElementById('unit-detail-fallback-img');
+    if (panoImg) {
+        panoImg.style.cursor = 'pointer';
+        panoImg.setAttribute('data-bs-toggle', 'modal');
+        panoImg.setAttribute('data-bs-target', '#unitDetailPanoramaModal');
+    }
+    // Modal panorama for main image (Pannellum)
+    var mainModal = document.getElementById('unitDetailPanoramaModal');
+    var pannellumViewer = null;
+    if (mainModal) {
+        mainModal.addEventListener('shown.bs.modal', function () {
+            if (!mainModal._panoramaLoaded) {
+                try {
+                    var panoElement = document.getElementById('unit-detail-modal-panorama-viewer');
+                    panoElement.innerHTML = '';
+                    pannellumViewer = pannellum.viewer('unit-detail-modal-panorama-viewer', {
+                        type: 'equirectangular',
+                        panorama: '{{ unit.main_image.url }}',
+                        autoLoad: true,
+                        showZoomCtrl: true,
+                        showFullscreenCtrl: true
+                    });
+                    panoElement.style.display = '';
+                    document.getElementById('unit-detail-modal-fallback-img').style.display = 'none';
+                } catch (e) {
+                    document.getElementById('unit-detail-modal-panorama-viewer').style.display = 'none';
+                    document.getElementById('unit-detail-modal-fallback-img').style.display = '';
+                }
+                mainModal._panoramaLoaded = true;
+            }
+        });
+        mainModal.addEventListener('hidden.bs.modal', function () {
+            if (pannellumViewer) {
+                document.getElementById('unit-detail-modal-panorama-viewer').innerHTML = '';
+                pannellumViewer = null;
+                mainModal._panoramaLoaded = false;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .unit-detail-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .unit-detail-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+    }
+    .unit-detail-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 20px 20px 0 0;
+        padding: 1.5rem 2rem 1rem 2rem;
+    }
+    .unit-detail-header h3 {
+        font-weight: 700;
+        margin: 0;
+    }
+    .unit-detail-body {
+        padding: 2rem;
+    }
+    .unit-detail-img {
+        border-radius: 14px;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.10);
+        width: 100%;
+        object-fit: cover;
+        margin-bottom: 1rem;
+    }
+    .unit-detail-title {
+        font-weight: 700;
+    }
+    .unit-detail-price {
+        color: var(--kiwi-green);
+        font-weight: 700;
+        font-size: 1.3rem;
+    }
+    .unit-detail-location {
+        color: var(--neutral-gray);
+        font-size: 1rem;
+    }
+    .unit-detail-section {
+        margin-bottom: 1.5rem;
+    }
+    .unit-detail-btn-primary {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.65rem 1.5rem;
+        font-size: 1rem;
+        margin-bottom: 0;
+        transition: background 0.2s, color 0.2s;
+    }
+    .unit-detail-btn-primary:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .unit-detail-btn-outline {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: 2px solid var(--neutral-gray);
+        padding: 0.65rem 1.5rem;
+        transition: border 0.2s, color 0.2s, background 0.2s;
+    }
+    .unit-detail-btn-outline:hover {
+        border: 2px solid var(--kiwi-green);
+        color: var(--kiwi-green);
+        background: var(--sage-beige);
+    }
+    @media (max-width: 768px) {
+        .unit-detail-body {
+            padding: 1rem;
+        }
+    }
+</style>
+<div class="row justify-content-center unit-detail-container">
+    <div class="col-md-8">
+        <div class="unit-detail-card">
+            <div class="unit-detail-header">
+                <h3 class="unit-detail-title">Apply for {{ unit.name }}</h3>
+            </div>
+            <div class="unit-detail-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <!-- 3D Panorama Viewer -->
+                        <!-- 3D Panorama Viewer (clickable) -->
+                        <img id="unit-detail-fallback-img" src="{{ unit.main_image.url }}" class="unit-detail-img" alt="{{ unit.name }}">
+                        <!-- Modal for 3D Panorama -->
+                        <div class="modal fade" id="unitDetailPanoramaModal" tabindex="-1" aria-labelledby="unitDetailPanoramaModalLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="unitDetailPanoramaModalLabel">{{ unit.name }} - 3D View</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                <div id="unit-detail-modal-panorama-viewer" style="width:100%;height:400px;"></div>
+                                <img id="unit-detail-modal-fallback-img" src="{{ unit.main_image.url }}" class="img-fluid rounded" alt="{{ unit.name }}" style="display:none;">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="unit-detail-section">
+                            <div class="unit-detail-price">₱{{ unit.monthly_price|floatformat:2 }} <small class="text-muted">/month</small></div>
+                            <div class="unit-detail-location"><i class="bi bi-geo-alt"></i> {{ unit.location }}</div>
+                        </div>
+                        <div class="unit-detail-section">
+                            <h5>Payment Inclusions</h5>
+                            <p>{{ unit.payment_inclusions }}</p>
+                        </div>
+                        <div class="unit-detail-section">
+                            <h5>House Rules</h5>
+                            <p>{{ unit.house_rules }}</p>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="mb-4" style="font-weight:700;color:var(--charcoal);">Application Form</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="unit-detail-btn-primary">Submit Application</button>
+                        <a href="{% url 'client_units' %}" class="unit-detail-btn-outline">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

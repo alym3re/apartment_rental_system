@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% block title %}Manage Units{% endblock %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .units-list-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .units-list-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    .units-list-title {
+        font-weight: 700;
+        color: var(--charcoal);
+        margin: 0;
+    }
+    .units-list-add-btn {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.65rem 1.5rem;
+        font-size: 1rem;
+        transition: background 0.2s, color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .units-list-add-btn:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .units-list-table {
+        background: var(--soft-cream);
+        border-radius: 16px;
+        overflow: hidden;
+        font-size: 1rem;
+        box-shadow: 0 2px 12px 0 rgba(60, 61, 66, 0.08);
+    }
+    .units-list-table th {
+        background: var(--sage-beige);
+        color: var(--charcoal);
+        font-weight: 600;
+        border: none;
+    }
+    .units-list-table td {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border: none;
+        vertical-align: middle;
+    }
+    .units-list-img {
+        border-radius: 10px;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.10);
+        height: 60px;
+        object-fit: cover;
+    }
+    .units-list-badge-success {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .units-list-badge-danger {
+        background: var(--error-red);
+        color: var(--cloud-white);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .units-list-btn {
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 0.45rem 1.1rem;
+        margin-right: 0.25rem;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.08);
+        border: none;
+        transition: background 0.2s, color 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .units-list-btn-primary {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+    }
+    .units-list-btn-primary:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .units-list-btn-danger {
+        background: var(--error-red);
+        color: var(--cloud-white);
+    }
+    .units-list-btn-danger:hover {
+        background: #b52d2a;
+        color: var(--cloud-white);
+    }
+    .text-muted {
+        color: var(--neutral-gray) !important;
+    }
+    @media (max-width: 768px) {
+        .units-list-header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+    }
+</style>
+<div class="units-list-container">
+    <div class="units-list-header">
+        <h2 class="units-list-title">Manage Units</h2>
+        <a href="{% url 'admin_unit_create' %}" class="units-list-add-btn">
+            <i class="bi bi-plus-circle"></i> Add Unit
+        </a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle units-list-table">
+            <thead>
+                <tr>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for unit in units %}
+                <tr>
+                    <td style="width: 120px;">
+                        <img src="{{ unit.main_image.url }}" alt="{{ unit.name }}" class="units-list-img">
+                    </td>
+                    <td>{{ unit.name }}</td>
+                    <td>{{ unit.location }}</td>
+                    <td>₱{{ unit.monthly_price|floatformat:2 }}</td>
+                    <td>
+                        {% if unit.status == unit.AVAILABLE %}
+                            <span class="units-list-badge-success">Available</span>
+                        {% else %}
+                            <span class="units-list-badge-danger">Occupied</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'admin_unit_update' unit.id %}" class="units-list-btn units-list-btn-primary">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <a href="{% url 'admin_unit_delete' unit.id %}" class="units-list-btn units-list-btn-danger">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No units found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

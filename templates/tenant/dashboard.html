@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block title %}Tenant Dashboard{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .tenant-dashboard-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .tenant-dashboard-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+    .tenant-dashboard-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 20px 20px 0 0;
+        padding: 1.5rem 2rem 1rem 2rem;
+    }
+    .tenant-dashboard-header h3, .tenant-dashboard-header h6 {
+        font-weight: 700;
+        margin: 0;
+    }
+    .tenant-dashboard-body {
+        padding: 2rem;
+    }
+    .tenant-dashboard-stat-card {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 16px;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding: 1.5rem 1.5rem 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 120px;
+    }
+    .tenant-dashboard-stat-card .icon {
+        font-size: 2.5rem;
+        color: var(--charcoal);
+        opacity: 0.25;
+    }
+    .tenant-dashboard-stat-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    .tenant-dashboard-stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+    .tenant-dashboard-actions {
+        gap: 1.25rem !important;
+    }
+    .tenant-dashboard-btn {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.85rem 1.5rem;
+        font-size: 1.1rem;
+        margin-bottom: 0;
+        transition: background 0.2s, color 0.2s;
+        min-width: 220px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    .tenant-dashboard-btn:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .tenant-dashboard-outline-btn {
+        background: var(--cloud-white);
+        color: var(--error-red);
+        border: 2px solid var(--error-red);
+        border-radius: 14px;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        transition: background 0.2s, color 0.2s, border 0.2s;
+    }
+    .tenant-dashboard-outline-btn:hover {
+        background: var(--error-red);
+        color: var(--cloud-white);
+        border: 2px solid var(--error-red);
+    }
+    @media (max-width: 768px) {
+        .tenant-dashboard-body {
+            padding: 1rem;
+        }
+        .tenant-dashboard-stat-card {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1rem;
+        }
+        .tenant-dashboard-actions {
+            flex-direction: column !important;
+            gap: 1rem !important;
+        }
+        .tenant-dashboard-btn {
+            min-width: 100%;
+        }
+    }
+    .tenant-dashboard-progress {
+        background: var(--sage-beige);
+        border-radius: 8px;
+        height: 8px;
+        width: 100%;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        overflow: hidden;
+    }
+    .tenant-dashboard-progress-bar {
+        background: var(--sky-blue);
+        height: 100%;
+        border-radius: 8px;
+        transition: width 0.4s;
+    }
+    @media (max-width: 768px) {
+        .tenant-dashboard-body {
+            padding: 1rem;
+        }
+        .tenant-dashboard-stat-card {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1rem;
+        }
+    }
+</style>
+<div class="container tenant-dashboard-container">
+    <div class="tenant-dashboard-header mb-4">
+        <h3>Tenant Dashboard</h3>
+    </div>
+    <div class="row">
+        <!-- Lease Info Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="tenant-dashboard-stat-card">
+                <div>
+                    <div class="tenant-dashboard-stat-title">Your Unit</div>
+                    <div class="tenant-dashboard-stat-value">{{ lease.unit.name }}</div>
+                    <div class="text-muted small">{{ lease.unit.location }}</div>
+                </div>
+                <div class="icon"><i class="bi bi-house-door"></i></div>
+            </div>
+        </div>
+        <!-- Rent Due Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="tenant-dashboard-stat-card">
+                <div>
+                    <div class="tenant-dashboard-stat-title">Next Payment Due</div>
+                    <div class="tenant-dashboard-stat-value">{{ next_payment_due|date:"M d, Y" }}</div>
+                    <div class="text-muted small">₱{{ lease.monthly_rent }}</div>
+                </div>
+                <div class="icon"><i class="bi bi-calendar-check"></i></div>
+            </div>
+        </div>
+        <!-- Notifications Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="tenant-dashboard-stat-card">
+                <div style="width:100%">
+                    <div class="tenant-dashboard-stat-title">Notifications</div>
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="tenant-dashboard-stat-value" style="font-size:1.5rem;">{{ unread_messages }}</div>
+                        <span class="ms-2 text-muted small">unread messages</span>
+                    </div>
+                    <div class="tenant-dashboard-progress">
+                        <div class="tenant-dashboard-progress-bar" style="width: {{ new_announcements }}%"></div>
+                    </div>
+                    <div class="text-muted small mt-1">{{ new_announcements }} new announcements</div>
+                </div>
+                <div class="icon"><i class="bi bi-bell"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="tenant-dashboard-card">
+                <div class="tenant-dashboard-body">
+                    <h5 class="mb-4" style="font-weight:700; color:var(--charcoal);">Quick Actions</h5>
+                    <div class="d-flex flex-wrap gap-3 justify-content-start tenant-dashboard-actions">
+                        <a href="{% url 'tenant_payment_history' %}" class="tenant-dashboard-btn flex-grow-1 flex-shrink-0">
+                            <i class="bi bi-cash-stack"></i> Payment History
+                        </a>
+                        <a href="{% url 'tenant_submit_payment' %}" class="tenant-dashboard-btn flex-grow-1 flex-shrink-0">
+                            <i class="bi bi-credit-card"></i> Submit Payment
+                        </a>
+                        <a href="{% url 'tenant_messages' %}" class="tenant-dashboard-btn flex-grow-1 flex-shrink-0">
+                            <i class="bi bi-envelope"></i> Messages
+                        </a>
+                        <a href="{% url 'tenant_announcements' %}" class="tenant-dashboard-btn flex-grow-1 flex-shrink-0">
+                            <i class="bi bi-megaphone"></i> Announcements
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="tenant-dashboard-card">
+                <div class="tenant-dashboard-body">
+                    <h5 class="mb-4" style="font-weight:700; color:var(--charcoal);">Lease Information</h5>
+                    <div class="mb-3">
+                        <h6 style="color:var(--kiwi-green);font-weight:600;">Unit Details</h6>
+                        <p><strong>Name:</strong> {{ lease.unit.name }}</p>
+                        <p><strong>Location:</strong> {{ lease.unit.location }}</p>
+                        <p><strong>Monthly Rent:</strong> ₱{{ lease.monthly_rent }}</p>
+                    </div>
+                    <div class="mb-3">
+                        <h6 style="color:var(--kiwi-green);font-weight:600;">Lease Period</h6>
+                        <p><strong>Start Date:</strong> {{ lease.start_date|date:"M d, Y" }}</p>
+                        {% if lease.end_date %}
+                            <p><strong>End Date:</strong> {{ lease.end_date|date:"M d, Y" }}</p>
+                        {% else %}
+                            <p><strong>Status:</strong> <span class="badge bg-success">Active</span></p>
+                        {% endif %}
+                    </div>
+                    <div class="text-end">
+                        <a href="{% url 'tenant_leave_request' %}" class="tenant-dashboard-outline-btn">
+                            <i class="bi bi-door-open"></i> Request to Leave
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

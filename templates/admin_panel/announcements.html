@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Announcements Management{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .admin-announcements-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .admin-announcement-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+    .admin-announcement-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 20px 20px 0 0;
+        padding: 1.25rem 2rem 1rem 2rem;
+    }
+    .admin-announcement-header h6 {
+        font-weight: 700;
+        margin: 0;
+    }
+    .admin-announcement-body {
+        padding: 2rem;
+    }
+    .admin-announcement-btn {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.65rem 1.5rem;
+        font-size: 1rem;
+        margin-bottom: 0;
+        transition: background 0.2s, color 0.2s;
+    }
+    .admin-announcement-btn:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .admin-announcement-list-item {
+        background: var(--soft-cream);
+        border-radius: 14px;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.06);
+        border: none;
+        margin-bottom: 1.25rem;
+        padding: 1.25rem 1.5rem;
+    }
+    .admin-announcement-list-item h5 {
+        font-weight: 600;
+        color: var(--charcoal);
+    }
+    .admin-announcement-list-item small {
+        color: var(--neutral-gray);
+    }
+    .admin-announcement-badge {
+        background: var(--sky-blue);
+        color: var(--cloud-white);
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .admin-announcement-badge-secondary {
+        background: var(--sage-beige);
+        color: var(--charcoal);
+    }
+    .modal-content {
+        border-radius: 18px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        font-family: 'Poppins', Arial, sans-serif !important;
+    }
+    .modal-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 18px 18px 0 0;
+    }
+    .modal-title {
+        font-weight: 700;
+    }
+    .modal-footer .btn {
+        border-radius: 10px;
+        font-weight: 600;
+    }
+    .alert-info {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        border: none;
+        font-weight: 500;
+    }
+    @media (max-width: 768px) {
+        .admin-announcement-body {
+            padding: 1rem;
+        }
+    }
+</style>
+<div class="container admin-announcements-container">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="admin-announcement-card">
+                <div class="admin-announcement-header">
+                    <h6>Create New Announcement</h6>
+                </div>
+                <div class="admin-announcement-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+                        <button type="submit" class="admin-announcement-btn">Post Announcement</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="admin-announcement-card">
+                <div class="admin-announcement-header">
+                    <h6>Recent Announcements</h6>
+                </div>
+                <div class="admin-announcement-body">
+                    {% if announcements %}
+                        <div>
+                            {% for announcement in announcements %}
+                            <div class="admin-announcement-list-item">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <h5 class="mb-1">{{ announcement.title }}</h5>
+                                    <small>{{ announcement.created_at|timesince }} ago</small>
+                                </div>
+                                <p class="mb-1">{{ announcement.content|truncatewords:20 }}</p>
+                                <small>
+                                    {% if announcement.is_global %}
+                                        <span class="admin-announcement-badge">All Tenants</span>
+                                    {% else %}
+                                        <span class="admin-announcement-badge admin-announcement-badge-secondary">Selected Tenants</span>
+                                    {% endif %}
+                                </small>
+                                <div class="mt-2">
+                                    <a href="#" class="admin-announcement-btn btn btn-sm" data-bs-toggle="modal" data-bs-target="#announcementModal{{ announcement.id }}">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- Announcement Modal -->
+                            <div class="modal fade" id="announcementModal{{ announcement.id }}" tabindex="-1" aria-labelledby="announcementModalLabel{{ announcement.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="announcementModalLabel{{ announcement.id }}">{{ announcement.title }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>{{ announcement.content }}</p>
+                                            <hr>
+                                            <p><strong>Posted by:</strong> {{ announcement.author.get_full_name }}</p>
+                                            <p><strong>Posted on:</strong> {{ announcement.created_at|date:"M d, Y H:i" }}</p>
+                                            <p><strong>Scope:</strong> 
+                                                {% if announcement.is_global %}
+                                                    All tenants
+                                                {% else %}
+                                                    Selected tenants
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            No announcements have been posted yet.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

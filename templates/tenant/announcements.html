@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Announcements{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .tenant-announcements-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .tenant-announcement-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        margin-bottom: 2rem;
+    }
+    .tenant-announcement-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 20px 20px 0 0;
+        padding: 1.25rem 2rem 1rem 2rem;
+    }
+    .tenant-announcement-header h6 {
+        font-weight: 700;
+        margin: 0;
+    }
+    .tenant-announcement-body {
+        padding: 2rem;
+    }
+    .tenant-announcement-list-item {
+        background: var(--soft-cream);
+        border-radius: 14px;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.06);
+        border: none;
+        margin-bottom: 1.25rem;
+        padding: 1.25rem 1.5rem;
+    }
+    .tenant-announcement-list-item h5 {
+        font-weight: 600;
+        color: var(--charcoal);
+    }
+    .tenant-announcement-list-item small {
+        color: var(--neutral-gray);
+    }
+    .tenant-announcement-btn {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 10px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.45rem 1.1rem;
+        font-size: 1rem;
+        margin-top: 0.5rem;
+        transition: background 0.2s, color 0.2s;
+    }
+    .tenant-announcement-btn:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .alert-info {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        border: none;
+        font-weight: 500;
+    }
+    @media (max-width: 768px) {
+        .tenant-announcement-body {
+            padding: 1rem;
+        }
+    }
+</style>
+<div class="container tenant-announcements-container">
+    <h1 class="h3 mb-4" style="color:var(--charcoal);font-weight:700;">Announcements</h1>
+    <div class="tenant-announcement-card">
+        <div class="tenant-announcement-header">
+            <h6>Recent Announcements</h6>
+        </div>
+        <div class="tenant-announcement-body">
+            {% if announcements %}
+                <div>
+                    {% for announcement in announcements %}
+                    <div class="tenant-announcement-list-item">
+                        <div class="d-flex w-100 justify-content-between align-items-center">
+                            <h5 class="mb-1">{{ announcement.title }}</h5>
+                            <small>{{ announcement.created_at|timesince }} ago</small>
+                        </div>
+                        <p class="mb-1">{{ announcement.content|truncatewords:20 }}</p>
+                        <div class="mt-2">
+                            <a href="{% url 'tenant_announcement_detail' announcement.id %}" class="tenant-announcement-btn btn btn-sm">
+                                Read More
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    No announcements available.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

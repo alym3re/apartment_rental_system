@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Review{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .payment-detail-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .payment-detail-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+    .payment-detail-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 20px 20px 0 0;
+        padding: 1.25rem 2rem 1rem 2rem;
+    }
+    .payment-detail-header h6 {
+        font-weight: 700;
+        margin: 0;
+    }
+    .payment-detail-body {
+        padding: 2rem;
+    }
+    .payment-detail-section-title {
+        font-weight: 700;
+        color: var(--charcoal);
+        margin-bottom: 1rem;
+    }
+    .payment-detail-badge {
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .payment-detail-badge-success {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .payment-detail-badge-danger {
+        background: var(--error-red);
+        color: var(--cloud-white);
+    }
+    .payment-detail-badge-warning {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+    }
+    .payment-detail-img {
+        border-radius: 12px;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.10);
+        max-height: 300px;
+        object-fit: cover;
+        margin-top: 0.5rem;
+    }
+    .payment-detail-form-label {
+        font-weight: 600;
+        color: var(--charcoal);
+        margin-bottom: 0.25rem;
+    }
+    .payment-detail-form-group {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        margin-bottom: 1.25rem;
+    }
+    .payment-detail-btn {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.65rem 1.5rem;
+        font-size: 1rem;
+        margin-bottom: 0;
+        transition: background 0.2s, color 0.2s;
+        margin-right: 0.5rem;
+    }
+    .payment-detail-btn:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .payment-detail-btn-secondary {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: 2px solid var(--neutral-gray);
+        padding: 0.65rem 1.5rem;
+        transition: border 0.2s, color 0.2s, background 0.2s;
+    }
+    .payment-detail-btn-secondary:hover {
+        border: 2px solid var(--kiwi-green);
+        color: var(--kiwi-green);
+        background: var(--sage-beige);
+    }
+    .border {
+        border-radius: 14px !important;
+        border: 2px solid var(--sage-beige) !important;
+        background: var(--soft-cream);
+    }
+    @media (max-width: 768px) {
+        .payment-detail-body {
+            padding: 1rem;
+        }
+    }
+</style>
+<div class="container payment-detail-container">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="payment-detail-card">
+                <div class="payment-detail-header">
+                    <h6>Payment Details</h6>
+                </div>
+                <div class="payment-detail-body">
+                    <div class="mb-4 d-flex flex-wrap gap-4">
+                        <div style="flex:1 1 250px; min-width:220px;">
+                            <div class="payment-detail-section-title">Tenant Information</div>
+                            <p><strong>Name:</strong> {{ payment.lease.tenant.get_full_name }}</p>
+                            <p><strong>Unit:</strong> {{ payment.lease.unit.name }}</p>
+                            <p><strong>Monthly Rent:</strong> ₱{{ payment.lease.monthly_rent }}</p>
+                        </div>
+                        <div style="flex:1 1 250px; min-width:220px;">
+                            <div class="payment-detail-section-title">Payment Information</div>
+                            <p><strong>Amount:</strong> ₱{{ payment.amount }}</p>
+                            <p><strong>Payment Date:</strong> {{ payment.payment_date|date:"M d, Y" }}</p>
+                            <p><strong>Submitted On:</strong> {{ payment.created_at|date:"M d, Y H:i" }}</p>
+                            <p><strong>Status:</strong> 
+                                <span class="payment-detail-badge 
+                                    {% if payment.status == payment.APPROVED %}payment-detail-badge-success
+                                    {% elif payment.status == payment.REJECTED %}payment-detail-badge-danger
+                                    {% else %}payment-detail-badge-warning{% endif %}">
+                                    {{ payment.get_status_display }}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    {% if payment.receipt %}
+                    <div class="mb-4">
+                        <div class="payment-detail-section-title">Payment Receipt</div>
+                        <div class="border p-3 text-center">
+                            <img src="{{ payment.receipt.url }}" class="payment-detail-img">
+                            <div class="mt-2">
+                                <a href="{{ payment.receipt.url }}" class="payment-detail-btn btn btn-sm" download>
+                                    <i class="bi bi-download"></i> Download Receipt
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <hr>
+                    <div class="payment-detail-section-title mb-3">Update Payment Status</div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="payment-detail-form-group">
+                            <label for="status" class="payment-detail-form-label">Status</label>
+                            <select id="status" name="status" required>
+                                <option value="{{ payment.PENDING }}" {% if payment.status == payment.PENDING %}selected{% endif %}>Pending</option>
+                                <option value="{{ payment.APPROVED }}" {% if payment.status == payment.APPROVED %}selected{% endif %}>Approved</option>
+                                <option value="{{ payment.REJECTED }}" {% if payment.status == payment.REJECTED %}selected{% endif %}>Rejected</option>
+                            </select>
+                        </div>
+                        <div class="payment-detail-form-group">
+                            <label for="notes" class="payment-detail-form-label">Notes</label>
+                            <textarea id="notes" name="notes" rows="3">{{ payment.notes|default:'' }}</textarea>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-start">
+                            <button type="submit" class="payment-detail-btn">Update Payment</button>
+                            <a href="{% url 'admin_payments' %}" class="payment-detail-btn-secondary">Back to List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

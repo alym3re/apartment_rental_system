@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment History{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .payment-history-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .payment-history-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        margin-bottom: 2rem;
+    }
+    .payment-history-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 20px 20px 0 0;
+        padding: 1.25rem 2rem 1rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .payment-history-header h6 {
+        font-weight: 700;
+        margin: 0;
+    }
+    .payment-history-body {
+        padding: 2rem;
+    }
+    .payment-history-table {
+        background: var(--soft-cream);
+        border-radius: 16px;
+        overflow: hidden;
+        font-size: 1rem;
+        box-shadow: 0 2px 12px 0 rgba(60, 61, 66, 0.08);
+    }
+    .payment-history-table th {
+        background: var(--sage-beige);
+        color: var(--charcoal);
+        font-weight: 600;
+        border: none;
+    }
+    .payment-history-table td {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border: none;
+        vertical-align: middle;
+    }
+    .payment-history-badge-success {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .payment-history-badge-danger {
+        background: var(--error-red);
+        color: var(--cloud-white);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .payment-history-badge-warning {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .payment-history-btn-pdf {
+        background: var(--error-red);
+        color: var(--cloud-white);
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 0.45rem 1.1rem;
+        box-shadow: 0 2px 8px 0 rgba(217, 83, 79, 0.10);
+        border: none;
+        transition: background 0.2s, color 0.2s;
+        margin-right: 0.5rem;
+    }
+    .payment-history-btn-pdf:hover {
+        background: #b52d2a;
+        color: var(--cloud-white);
+    }
+    .payment-history-btn-excel {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 0.45rem 1.1rem;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        border: none;
+        transition: background 0.2s, color 0.2s;
+    }
+    .payment-history-btn-excel:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .payment-history-btn-receipt {
+        background: var(--sky-blue);
+        color: var(--cloud-white);
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 0.45rem 1.1rem;
+        box-shadow: 0 2px 8px 0 rgba(91, 192, 222, 0.10);
+        border: none;
+        transition: background 0.2s, color 0.2s;
+    }
+    .payment-history-btn-receipt:hover {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+    }
+    .payment-history-summary {
+        background: var(--soft-cream);
+        border-radius: 14px;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.08);
+        padding: 1.25rem 1.5rem;
+        margin-top: 2rem;
+    }
+    @media (max-width: 768px) {
+        .payment-history-body {
+            padding: 1rem;
+        }
+    }
+</style>
+<div class="container payment-history-container">
+    <h1 class="h3 mb-4" style="color:var(--charcoal);font-weight:700;">Payment History</h1>
+    <div class="payment-history-card">
+        <div class="payment-history-header">
+            <h6>Your Payments</h6>
+            <div>
+                <a href="?export=pdf" class="payment-history-btn-pdf">
+                    <i class="bi bi-file-earmark-pdf"></i> Export PDF
+                </a>
+                <a href="?export=excel" class="payment-history-btn-excel">
+                    <i class="bi bi-file-earmark-excel"></i> Export Excel
+                </a>
+            </div>
+        </div>
+        <div class="payment-history-body">
+            <div class="table-responsive">
+                <table class="table payment-history-table align-middle" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Notes</th>
+                            <th>Receipt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr>
+                            <td>{{ payment.payment_date|date:"M d, Y" }}</td>
+                            <td>₱{{ payment.amount }}</td>
+                            <td>
+                                <span class="{% if payment.status == payment.APPROVED %}payment-history-badge-success{% elif payment.status == payment.REJECTED %}payment-history-badge-danger{% else %}payment-history-badge-warning{% endif %}">
+                                    {{ payment.get_status_display }}
+                                </span>
+                            </td>
+                            <td>{{ payment.notes|default:"-"|truncatewords:5 }}</td>
+                            <td>
+                                {% if payment.receipt %}
+                                    <a href="{{ payment.receipt.url }}" target="_blank" class="payment-history-btn-receipt">
+                                        <i class="bi bi-download"></i> View
+                                    </a>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No payment records found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="payment-history-summary mt-4">
+                <h5 style="color:var(--kiwi-green);font-weight:700;">Lease Summary</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Unit:</strong> {{ lease.unit.name }}</p>
+                        <p><strong>Monthly Rent:</strong> ₱{{ lease.monthly_rent }}</p>
+                        <p><strong>Lease Start:</strong> {{ lease.start_date|date:"M d, Y" }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Total Payments:</strong> ₱{{ total_payments|default:"0" }}</p>
+                        <p><strong>Last Payment:</strong> {{ last_payment_date|default:"-" }}</p>
+                        <p><strong>Next Payment Due:</strong> {{ next_payment_due|date:"M d, Y" }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

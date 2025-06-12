@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}Messages{% endblock %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .admin-messages-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        max-width: 700px;
+        margin: 2.5rem auto 0 auto;
+    }
+    .admin-messages-title {
+        font-weight: 700;
+        color: var(--charcoal);
+        margin-bottom: 2rem;
+    }
+    .admin-messages-btn-primary {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.65rem 1.5rem;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        transition: background 0.2s, color 0.2s;
+        display: block;
+        width: 100%;
+    }
+    .admin-messages-btn-primary:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .admin-messages-btn-success {
+        background: var(--sky-blue);
+        color: var(--cloud-white);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(91, 192, 222, 0.10);
+        padding: 0.65rem 1.5rem;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        transition: background 0.2s, color 0.2s;
+        display: block;
+        width: 100%;
+    }
+    .admin-messages-btn-success:hover {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+    }
+    .admin-messages-btn-link {
+        color: var(--kiwi-green);
+        font-weight: 600;
+        text-decoration: underline;
+        margin-top: 1rem;
+        display: inline-block;
+    }
+    .admin-messages-btn-link:hover {
+        color: var(--success-olive);
+    }
+</style>
+<div class="admin-messages-container">
+    <h3 class="admin-messages-title">Conversations</h3>
+    <a href="{% url 'conversation_list' %}" class="admin-messages-btn-primary">Go to Conversations</a>
+    <a href="{% url 'conversation_create' %}" class="admin-messages-btn-success">Start New Conversation</a>
+</div>
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .admin-dashboard-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .admin-dashboard-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+    .admin-dashboard-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 20px 20px 0 0;
+        padding: 1.5rem 2rem 1rem 2rem;
+    }
+    .admin-dashboard-header h3, .admin-dashboard-header h6 {
+        font-weight: 700;
+        margin: 0;
+    }
+    .admin-dashboard-body {
+        padding: 2rem;
+    }
+    .admin-dashboard-stat-card {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 16px;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        padding: 1.5rem 1.5rem 1.25rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 120px;
+    }
+    .admin-dashboard-stat-card .icon {
+        font-size: 2.5rem;
+        color: var(--charcoal);
+        opacity: 0.25;
+    }
+    .admin-dashboard-stat-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    .admin-dashboard-stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+    .admin-dashboard-actions {
+        gap: 1.25rem !important;
+    }
+    .admin-dashboard-btn {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.85rem 1.5rem;
+        font-size: 1.1rem;
+        margin-bottom: 0;
+        transition: background 0.2s, color 0.2s;
+        min-width: 220px;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    .admin-dashboard-btn:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    @media (max-width: 768px) {
+        .admin-dashboard-body {
+            padding: 1rem;
+        }
+        .admin-dashboard-stat-card {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1rem;
+        }
+        .admin-dashboard-actions {
+            flex-direction: column !important;
+            gap: 1rem !important;
+        }
+        .admin-dashboard-btn {
+            min-width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container admin-dashboard-container">
+    <div class="admin-dashboard-header mb-4">
+        <h3>Admin Dashboard</h3>
+    </div>
+    <div class="row">
+        <!-- Pending Applications Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="admin-dashboard-stat-card">
+                <div>
+                    <div class="admin-dashboard-stat-title">Pending Applications</div>
+                    <div class="admin-dashboard-stat-value">{{ pending_applications }}</div>
+                </div>
+                <div class="icon"><i class="bi bi-file-earmark-text"></i></div>
+            </div>
+        </div>
+        <!-- Active Tenants Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="admin-dashboard-stat-card">
+                <div>
+                    <div class="admin-dashboard-stat-title">Active Tenants</div>
+                    <div class="admin-dashboard-stat-value">{{ active_tenants }}</div>
+                </div>
+                <div class="icon"><i class="bi bi-people"></i></div>
+            </div>
+        </div>
+        <!-- Pending Payments Card -->
+        <div class="col-xl-4 col-md-6 mb-4">
+            <div class="admin-dashboard-stat-card">
+                <div>
+                    <div class="admin-dashboard-stat-title">Pending Payments</div>
+                    <div class="admin-dashboard-stat-value">{{ pending_payments }}</div>
+                </div>
+                <div class="icon"><i class="bi bi-cash-stack"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="admin-dashboard-card">
+        <div class="admin-dashboard-body">
+            <h5 class="mb-4" style="font-weight:700; color:var(--charcoal);">Quick Actions</h5>
+            <div class="d-flex flex-wrap gap-3 justify-content-start admin-dashboard-actions">
+                <a href="{% url 'admin_applications' %}" class="admin-dashboard-btn flex-grow-1 flex-shrink-0">
+                    <i class="bi bi-file-earmark-text"></i> Manage Applications
+                </a>
+                <a href="{% url 'admin_tenants' %}" class="admin-dashboard-btn flex-grow-1 flex-shrink-0">
+                    <i class="bi bi-people"></i> Manage Tenants
+                </a>
+                <a href="{% url 'admin_payments' %}" class="admin-dashboard-btn flex-grow-1 flex-shrink-0">
+                    <i class="bi bi-cash-stack"></i> Manage Payments
+                </a>
+                <a href="{% url 'admin_announcements' %}" class="admin-dashboard-btn flex-grow-1 flex-shrink-0">
+                    <i class="bi bi-megaphone"></i> Post Announcement
+                </a>
+                <a href="{% url 'admin_units_list' %}" class="admin-dashboard-btn flex-grow-1 flex-shrink-0">
+                    <i class="bi bi-house-door"></i> Manage Units
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

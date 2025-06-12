@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ announcement.title }}{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .tenant-announcement-detail-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .tenant-announcement-detail-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        margin-bottom: 2rem;
+    }
+    .tenant-announcement-detail-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 20px 20px 0 0;
+        padding: 1.25rem 2rem 1rem 2rem;
+    }
+    .tenant-announcement-detail-header h6 {
+        font-weight: 700;
+        margin: 0;
+    }
+    .tenant-announcement-detail-body {
+        padding: 2rem;
+    }
+    .tenant-announcement-detail-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        font-size: 1rem;
+        color: var(--charcoal);
+    }
+    .tenant-announcement-detail-content {
+        background: var(--soft-cream);
+        border-radius: 14px;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.06);
+        padding: 1.5rem 1.5rem;
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+        color: var(--charcoal);
+    }
+    .tenant-announcement-detail-back-btn {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: 2px solid var(--neutral-gray);
+        padding: 0.65rem 1.5rem;
+        transition: border 0.2s, color 0.2s, background 0.2s;
+    }
+    .tenant-announcement-detail-back-btn:hover {
+        border: 2px solid var(--kiwi-green);
+        color: var(--kiwi-green);
+        background: var(--sage-beige);
+    }
+    @media (max-width: 768px) {
+        .tenant-announcement-detail-body {
+            padding: 1rem;
+        }
+        .tenant-announcement-detail-meta {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+</style>
+<div class="container tenant-announcement-detail-container">
+    <h1 class="h3 mb-4" style="color:var(--charcoal);font-weight:700;">Announcement Details</h1>
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="tenant-announcement-detail-card">
+                <div class="tenant-announcement-detail-header">
+                    <h6>{{ announcement.title }}</h6>
+                </div>
+                <div class="tenant-announcement-detail-body">
+                    <div class="tenant-announcement-detail-meta">
+                        <div><strong>Posted by:</strong> {{ announcement.author.get_full_name }}</div>
+                        <div class="text-end"><strong>Posted on:</strong> {{ announcement.created_at|date:"M d, Y H:i" }}</div>
+                    </div>
+                    <div class="tenant-announcement-detail-content">
+                        {{ announcement.content|linebreaks }}
+                    </div>
+                    <div class="text-end">
+                        <a href="{% url 'tenant_announcements' %}" class="tenant-announcement-detail-back-btn">Back to Announcements</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

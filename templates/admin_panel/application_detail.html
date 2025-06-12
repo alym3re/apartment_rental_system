@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block title %}Application Review{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .app-detail-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .app-detail-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+    .app-detail-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 20px 20px 0 0;
+        padding: 1.25rem 2rem 1rem 2rem;
+    }
+    .app-detail-header h6 {
+        font-weight: 700;
+        margin: 0;
+    }
+    .app-detail-body {
+        padding: 2rem;
+    }
+    .app-detail-section-title {
+        font-weight: 700;
+        color: var(--charcoal);
+        margin-bottom: 1rem;
+    }
+    .app-detail-badge {
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .app-detail-badge-success {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .app-detail-badge-danger {
+        background: var(--error-red);
+        color: var(--cloud-white);
+    }
+    .app-detail-badge-warning {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+    }
+    .app-detail-img {
+        border-radius: 12px;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.10);
+        max-height: 150px;
+        object-fit: cover;
+        margin-top: 0.5rem;
+    }
+    .app-detail-form-label {
+        font-weight: 600;
+        color: var(--charcoal);
+        margin-bottom: 0.25rem;
+    }
+    .app-detail-form-group {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        margin-bottom: 1.25rem;
+    }
+    .app-detail-btn {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.65rem 1.5rem;
+        font-size: 1rem;
+        margin-bottom: 0;
+        transition: background 0.2s, color 0.2s;
+        margin-right: 0.5rem;
+    }
+    .app-detail-btn:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    .app-detail-btn-secondary {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: 2px solid var(--neutral-gray);
+        padding: 0.65rem 1.5rem;
+        transition: border 0.2s, color 0.2s, background 0.2s;
+    }
+    .app-detail-btn-secondary:hover {
+        border: 2px solid var(--kiwi-green);
+        color: var(--kiwi-green);
+        background: var(--sage-beige);
+    }
+    @media (max-width: 768px) {
+        .app-detail-body {
+            padding: 1rem;
+        }
+    }
+</style>
+<div class="container app-detail-container">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="app-detail-card">
+                <div class="app-detail-header">
+                    <h6>Application Details</h6>
+                </div>
+                <div class="app-detail-body">
+                    <div class="mb-4 d-flex flex-wrap gap-4">
+                        <div style="flex:1 1 250px; min-width:220px;">
+                            <div class="app-detail-section-title">Applicant Information</div>
+                            <p><strong>Name:</strong> {{ application.full_name }}</p>
+                            <p><strong>Address:</strong> {{ application.address }}</p>
+                            <p><strong>Contact:</strong> {{ application.contact_number }}</p>
+                            <p><strong>Email:</strong> {{ application.email }}</p>
+                            {% if application.facebook_account %}
+                                <p><strong>Facebook:</strong> {{ application.facebook_account }}</p>
+                            {% endif %}
+                            <p><strong>Occupation:</strong> {{ application.occupation }}</p>
+                            <p><strong>Number of People:</strong> {{ application.number_of_people }}</p>
+                        </div>
+                        <div style="flex:1 1 250px; min-width:220px;">
+                            <div class="app-detail-section-title">Unit Information</div>
+                            <p><strong>Unit Name:</strong> {{ application.unit.name }}</p>
+                            <p><strong>Monthly Price:</strong> ₱{{ application.unit.monthly_price }}</p>
+                            <p><strong>Location:</strong> {{ application.unit.location }}</p>
+                            <img src="{{ application.unit.main_image.url }}" class="app-detail-img">
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="app-detail-section-title mb-3">Application Status</div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="app-detail-form-group">
+                            <label class="app-detail-form-label">Current Status</label>
+                            <span class="app-detail-badge 
+                                {% if application.status == application.APPROVED %}app-detail-badge-success
+                                {% elif application.status == application.REJECTED %}app-detail-badge-danger
+                                {% else %}app-detail-badge-warning{% endif %}">
+                                {{ application.get_status_display }}
+                            </span>
+                        </div>
+                        <div class="app-detail-form-group">
+                            <label for="status" class="app-detail-form-label">Update Status</label>
+                            <select id="status" name="status" required>
+                                <option value="{{ application.PENDING }}" {% if application.status == application.PENDING %}selected{% endif %}>Pending</option>
+                                <option value="{{ application.APPROVED }}" {% if application.status == application.APPROVED %}selected{% endif %}>Approved</option>
+                                <option value="{{ application.REJECTED }}" {% if application.status == application.REJECTED %}selected{% endif %}>Rejected</option>
+                            </select>
+                        </div>
+                        <div class="app-detail-form-group">
+                            <label for="notes" class="app-detail-form-label">Notes</label>
+                            <textarea id="notes" name="notes" rows="3">{{ application.notes|default:'' }}</textarea>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-start">
+                            <button type="submit" class="app-detail-btn">Update Application</button>
+                            <a href="{% url 'admin_applications' %}" class="app-detail-btn-secondary">Back to List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

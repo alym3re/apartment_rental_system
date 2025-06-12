@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome to Apartment Rental System{% endblock %}
+
+{% block content %}
+<!-- Import Poppins font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    body, .container, .card, .btn, h1, h2, h5, p, a {
+        font-family: 'Poppins', Arial, sans-serif !important;
+    }
+    .revamp-hero {
+        background: var(--soft-cream);
+        border-radius: 24px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        padding: 3rem 2rem;
+        margin-bottom: 3rem;
+    }
+    .revamp-hero h1 {
+        color: var(--charcoal);
+        font-weight: 700;
+    }
+    .revamp-hero p {
+        color: var(--charcoal);
+        font-size: 1.25rem;
+    }
+    .revamp-btn-primary {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.15);
+        font-weight: 600;
+        transition: background 0.2s, box-shadow 0.2s;
+    }
+    .revamp-btn-primary:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+        box-shadow: 0 4px 16px 0 rgba(107, 165, 57, 0.18);
+    }
+    .revamp-btn-outline {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border: 2px solid var(--neutral-gray);
+        border-radius: 14px;
+        font-weight: 600;
+        transition: border 0.2s, color 0.2s;
+    }
+    .revamp-btn-outline:hover {
+        border: 2px solid var(--kiwi-green);
+        color: var(--kiwi-green);
+    }
+    .revamp-feature-card {
+        background: var(--cloud-white);
+        border-radius: 18px;
+        box-shadow: 0 2px 16px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        padding: 2rem 1.5rem 1.5rem 1.5rem;
+        margin-bottom: 2rem;
+        transition: box-shadow 0.2s;
+    }
+    .revamp-feature-card:hover {
+        box-shadow: 0 6px 32px 0 rgba(60, 61, 66, 0.16);
+    }
+    .revamp-icon-square {
+        width: 64px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 16px;
+        font-size: 2rem;
+        margin: 0 auto 1.25rem auto;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+    }
+    .revamp-feature-card h5 {
+        color: var(--charcoal);
+        font-weight: 600;
+        margin-top: 0.5rem;
+    }
+    .revamp-feature-card p {
+        color: var(--charcoal);
+        font-size: 1rem;
+    }
+    .revamp-cta {
+        background: var(--sage-beige);
+        border-radius: 20px;
+        box-shadow: 0 2px 16px 0 rgba(60, 61, 66, 0.10);
+        padding: 3rem 2rem;
+        margin-top: 3rem;
+    }
+    .revamp-cta h2 {
+        color: var(--charcoal);
+        font-weight: 700;
+    }
+    @media (max-width: 768px) {
+        .revamp-hero, .revamp-cta {
+            padding: 2rem 1rem;
+        }
+        .revamp-feature-card {
+            padding: 1.5rem 1rem 1rem 1rem;
+        }
+    }
+</style>
+<div class="container py-4">
+    <!-- Hero Section -->
+    <div class="revamp-hero">
+        <div class="row align-items-center">
+            <div class="col-lg-12 text-center">
+                <h1 class="mb-3">Northside Avenue Online Apartment Rental</h1>
+                <p class="mb-4">Browse our selection of quality apartments and apply online in minutes. Enjoy a seamless rental experience from application to move-in.</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard' %}" class="revamp-btn-primary btn btn-lg px-4">Go to Dashboard</a>
+                    {% else %}
+                        <a href="{% url 'register' %}" class="revamp-btn-primary btn btn-lg px-4">Get Started</a>
+                        <a href="{% url 'login' %}" class="revamp-btn-outline btn btn-lg px-4">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row justify-content-center my-5">
+        <div class="col-md-4">
+            <div class="revamp-feature-card text-center h-100">
+                <div class="revamp-icon-square">
+                    <i class="bi bi-house-door"></i>
+                </div>
+                <h5>Quality Listings</h5>
+                <p>Browse carefully curated apartments with detailed information and high-quality photos.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="revamp-feature-card text-center h-100">
+                <div class="revamp-icon-square">
+                    <i class="bi bi-phone"></i>
+                </div>
+                <h5>Online Applications</h5>
+                <p>Apply for your dream apartment online without the hassle of paper forms.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="revamp-feature-card text-center h-100">
+                <div class="revamp-icon-square">
+                    <i class="bi bi-chat-dots"></i>
+                </div>
+                <h5>Direct Communication</h5>
+                <p>Message property managers directly through our platform for quick responses.</p>
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Client Dashboard{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .client-dashboard-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .client-dashboard-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        padding: 0;
+    }
+    .client-dashboard-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 20px 20px 0 0;
+        padding: 1.5rem 2rem 1rem 2rem;
+    }
+    .client-dashboard-header h3 {
+        font-weight: 700;
+        margin: 0;
+    }
+    .client-dashboard-body {
+        padding: 2rem;
+    }
+    .client-dashboard-alert {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        padding: 1.25rem 1.5rem;
+    }
+    .client-dashboard-alert h4 {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    .client-dashboard-warning {
+        background: var(--error-red);
+        color: var(--cloud-white);
+        border-radius: 14px;
+        box-shadow: 0 2px 8px 0 rgba(217, 83, 79, 0.10);
+        font-weight: 500;
+        margin-bottom: 1.5rem;
+        padding: 1.25rem 1.5rem;
+    }
+    .client-dashboard-warning a.btn {
+        background: var(--cloud-white);
+        color: var(--error-red);
+        border-radius: 10px;
+        font-weight: 600;
+        border: none;
+        margin-top: 0.5rem;
+    }
+    .client-dashboard-warning a.btn:hover {
+        background: var(--sage-beige);
+        color: var(--charcoal);
+    }
+    .client-dashboard-btn {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+        border-radius: 14px;
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 2px 8px 0 rgba(156, 205, 98, 0.10);
+        padding: 0.75rem 2rem;
+        font-size: 1.1rem;
+        transition: background 0.2s, color 0.2s;
+    }
+    .client-dashboard-btn:hover {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+    }
+    @media (max-width: 768px) {
+        .client-dashboard-body {
+            padding: 1rem;
+        }
+    }
+</style>
+<div class="row client-dashboard-container">
+    <div class="col-md-8 mx-auto">
+        <div class="client-dashboard-card">
+            <div class="client-dashboard-header">
+                <h3>Client Dashboard</h3>
+            </div>
+            <div class="client-dashboard-body">
+                <div class="client-dashboard-alert">
+                    <h4>Welcome, {{ user.get_full_name|default:user.username }}!</h4>
+                    <p>You can browse available units and submit rental applications.</p>
+                </div>
+                {% if has_pending_application %}
+                    <div class="client-dashboard-warning">
+                        <p>You have a pending application. You can check its status below.</p>
+                        <a href="{% url 'client_application_status' %}" class="btn btn-sm">View Application Status</a>
+                    </div>
+                {% endif %}
+                <div class="d-flex justify-content-start mt-4">
+                    <a href="{% url 'client_units' %}" class="client-dashboard-btn">
+                        <i class="bi bi-house-door"></i> Browse Available Units
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

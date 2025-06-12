@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+
+{% block title %}Tenants Management{% endblock %}
+
+{% block content %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    .tenants-container {
+        font-family: 'Poppins', Arial, sans-serif !important;
+        margin-top: 2.5rem;
+    }
+    .tenants-card {
+        background: var(--cloud-white);
+        border-radius: 20px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        border: none;
+        margin-bottom: 2rem;
+    }
+    .tenants-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 20px 20px 0 0;
+        padding: 1.25rem 2rem 1rem 2rem;
+    }
+    .tenants-header h6 {
+        font-weight: 700;
+        margin: 0;
+    }
+    .tenants-body {
+        padding: 2rem;
+    }
+    .tenants-table {
+        background: var(--soft-cream);
+        border-radius: 16px;
+        overflow: hidden;
+        font-size: 1rem;
+        box-shadow: 0 2px 12px 0 rgba(60, 61, 66, 0.08);
+    }
+    .tenants-table th {
+        background: var(--sage-beige);
+        color: var(--charcoal);
+        font-weight: 600;
+        border: none;
+    }
+    .tenants-table td {
+        background: var(--cloud-white);
+        color: var(--charcoal);
+        border: none;
+        vertical-align: middle;
+    }
+    .tenants-avatar, .tenants-avatar-initials {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        object-fit: cover;
+        font-size: 1.2rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.10);
+        margin-right: 1rem;
+    }
+    .tenants-avatar-initials {
+        background: var(--kiwi-green);
+        color: var(--charcoal);
+    }
+    .tenants-badge-success {
+        background: var(--success-olive);
+        color: var(--cloud-white);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .tenants-badge-secondary {
+        background: var(--neutral-gray);
+        color: var(--cloud-white);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+    }
+    .tenants-btn-info {
+        background: var(--sky-blue);
+        color: var(--cloud-white);
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 1rem;
+        padding: 0.45rem 1.1rem;
+        box-shadow: 0 2px 8px 0 rgba(60, 61, 66, 0.08);
+        border: none;
+        transition: background 0.2s, color 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+    .tenants-btn-info:hover {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+    }
+    .modal-content {
+        border-radius: 18px;
+        box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
+        font-family: 'Poppins', Arial, sans-serif !important;
+    }
+    .modal-header {
+        background: var(--charcoal);
+        color: var(--cloud-white);
+        border-radius: 18px 18px 0 0;
+    }
+    .modal-title {
+        font-weight: 700;
+    }
+    .modal-footer .btn {
+        border-radius: 10px;
+        font-weight: 600;
+    }
+    .text-muted {
+        color: var(--neutral-gray) !important;
+    }
+    @media (max-width: 768px) {
+        .tenants-body {
+            padding: 1rem;
+        }
+    }
+</style>
+<div class="tenants-container">
+    <div class="tenants-card">
+        <div class="tenants-header">
+            <h6>Active Tenants</h6>
+        </div>
+        <div class="tenants-body">
+            <div class="table-responsive">
+                <table class="table tenants-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Tenant</th>
+                            <th>Unit</th>
+                            <th>Lease Start</th>
+                            <th>Monthly Rent</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lease in leases %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    {% if lease.tenant.profile_picture %}
+                                        <img src="{{ lease.tenant.profile_picture.url }}" class="tenants-avatar">
+                                    {% else %}
+                                        <div class="tenants-avatar-initials">
+                                            {{ lease.tenant.first_name|first|upper }}{{ lease.tenant.last_name|first|upper }}
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <strong>{{ lease.tenant.get_full_name }}</strong><br>
+                                        <small class="text-muted">{{ lease.tenant.email }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ lease.unit.name }}</td>
+                            <td>{{ lease.start_date|date:"M d, Y" }}</td>
+                            <td>₱{{ lease.monthly_rent }}</td>
+                            <td>
+                                <span class="{% if lease.is_active %}tenants-badge-success{% else %}tenants-badge-secondary{% endif %}">
+                                    {% if lease.is_active %}Active{% else %}Inactive{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="#" class="tenants-btn-info" data-bs-toggle="modal" data-bs-target="#tenantModal{{ lease.tenant.id }}">
+                                    <i class="bi bi-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                        <!-- Tenant Modal -->
+                        <div class="modal fade" id="tenantModal{{ lease.tenant.id }}" tabindex="-1" aria-labelledby="tenantModalLabel{{ lease.tenant.id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="tenantModalLabel{{ lease.tenant.id }}">Tenant Details</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-4 text-center">
+                                                {% if lease.tenant.profile_picture %}
+                                                    <img src="{{ lease.tenant.profile_picture.url }}" class="img-fluid rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                                                {% else %}
+                                                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mb-3" style="width: 150px; height: 150px; font-size: 3rem;">
+                                                        {{ lease.tenant.first_name|first|upper }}{{ lease.tenant.last_name|first|upper }}
+                                                    </div>
+                                                {% endif %}
+                                                <h4>{{ lease.tenant.get_full_name }}</h4>
+                                                <p class="text-muted">{{ lease.tenant.email }}</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <h5>Contact Information</h5>
+                                                <p><strong>Phone:</strong> {{ lease.tenant.phone_number|default:"Not provided" }}</p>
+                                                {% if lease.tenant.facebook_account %}
+                                                    <p><strong>Facebook:</strong> <a href="{{ lease.tenant.facebook_account }}" target="_blank">{{ lease.tenant.facebook_account }}</a></p>
+                                                {% endif %}
+                                                <p><strong>Address:</strong> {{ lease.tenant.address|default:"Not provided" }}</p>
+                                                <p><strong>Occupation:</strong> {{ lease.tenant.occupation|default:"Not provided" }}</p>
+                                                <hr>
+                                                <h5>Lease Information</h5>
+                                                <p><strong>Unit:</strong> {{ lease.unit.name }}</p>
+                                                <p><strong>Monthly Rent:</strong> ₱{{ lease.monthly_rent }}</p>
+                                                <p><strong>Start Date:</strong> {{ lease.start_date|date:"M d, Y" }}</p>
+                                                {% if lease.end_date %}
+                                                    <p><strong>End Date:</strong> {{ lease.end_date|date:"M d, Y" }}</p>
+                                                {% endif %}
+                                                <p><strong>Status:</strong> 
+                                                    <span class="{% if lease.is_active %}tenants-badge-success{% else %}tenants-badge-secondary{% endif %}">
+                                                        {% if lease.is_active %}Active{% else %}Inactive{% endif %}
+                                                    </span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
