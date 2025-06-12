@@ -263,14 +263,16 @@ def client_dashboard(request):
     }
     return render(request, 'client/dashboard.html', context)
 
-@login_required
 def client_units(request):
-    if request.user.role != User.CLIENT:
-        return redirect('dashboard')
-    
-    # Only show units that are available and do not have an active lease
-    leased_unit_ids = Lease.objects.filter(is_active=True).values_list('unit_id', flat=True)
-    units = Unit.objects.filter(status=Unit.AVAILABLE).exclude(id__in=leased_unit_ids)
+    # Get all units and annotate whether they're occupied
+    units = Unit.objects.all().annotate(
+        is_occupied=models.Exists(
+            Lease.objects.filter(
+                unit=models.OuterRef('pk'),
+                is_active=True
+            )
+        )
+    )
     return render(request, 'client/units.html', {'units': units})
 
 @login_required

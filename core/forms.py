@@ -34,9 +34,15 @@ class ApplicationForm(forms.ModelForm):
         }
 
 class PaymentForm(forms.ModelForm):
+    mode_of_payment = forms.ChoiceField(
+        choices=Payment.PAYMENT_MODE_CHOICES,
+        widget=forms.RadioSelect,
+        initial=Payment.CASH
+    )
+    
     class Meta:
         model = Payment
-        fields = ['amount', 'payment_date', 'receipt', 'notes']
+        fields = ['amount', 'payment_date', 'mode_of_payment', 'receipt', 'notes']
         widgets = {
             'payment_date': forms.DateInput(attrs={'type': 'date'}),
             'notes': forms.Textarea(attrs={'rows': 3}),

@@ -157,6 +157,7 @@
                             <th>Tenant</th>
                             <th>Unit</th>
                             <th>Amount</th>
+                            <th>MOP</th>
                             <th>Payment Date</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -168,6 +169,7 @@
                             <td>{{ payment.lease.tenant.get_full_name }}</td>
                             <td>{{ payment.lease.unit.name }}</td>
                             <td>₱{{ payment.amount }}</td>
+                            <td>{{ payment.get_mode_of_payment_display }}</td>
                             <td>{{ payment.payment_date|date:"M d, Y" }}</td>
                             <td>
                                 <span class="{% if payment.status == payment.APPROVED %}payments-badge-success{% elif payment.status == payment.REJECTED %}payments-badge-danger{% else %}payments-badge-warning{% endif %}">

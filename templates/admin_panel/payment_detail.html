@@ -131,6 +131,7 @@
                         <div style="flex:1 1 250px; min-width:220px;">
                             <div class="payment-detail-section-title">Payment Information</div>
                             <p><strong>Amount:</strong> ₱{{ payment.amount }}</p>
+                            <p><strong>Mode of Payment:</strong> {{ payment.get_mode_of_payment_display }}</p>
                             <p><strong>Payment Date:</strong> {{ payment.payment_date|date:"M d, Y" }}</p>
                             <p><strong>Submitted On:</strong> {{ payment.created_at|date:"M d, Y H:i" }}</p>
                             <p><strong>Status:</strong> 

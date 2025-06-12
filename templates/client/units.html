@@ -140,30 +140,32 @@
                     <div class="units-card h-100">
                         <!-- 3D Panorama Viewer -->
                         <img id="fallback-img-{{ unit.id }}" src="{{ unit.main_image.url }}" class="units-card-img panorama-clickable" alt="{{ unit.name }}" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#mainPanoramaModal{{ unit.id }}">
+                        
                         <!-- Main Panorama Modal -->
                         <div class="modal fade" id="mainPanoramaModal{{ unit.id }}" tabindex="-1" aria-labelledby="mainPanoramaModalLabel{{ unit.id }}" aria-hidden="true">
-                          <div class="modal-dialog modal-dialog-centered modal-lg">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="mainPanoramaModalLabel{{ unit.id }}">{{ unit.name }} - 3D View</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                              </div>
-                              <div class="modal-body">
-                                {% for unit in units %}
-                                    <div id="panorama-{{ unit.id }}" style="width:600px; height:400px; margin:2rem auto;"></div>
-                                    <script>
-                                    document.addEventListener('DOMContentLoaded', function() {
-                                        pannellum.viewer('panorama-{{ unit.id }}', {
-                                            "type": "equirectangular",
-                                            "panorama": "{{ unit.main_image.url }}"
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="mainPanoramaModalLabel{{ unit.id }}">{{ unit.name }} - 3D View</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Remove the for loop here and just show the current unit's panorama -->
+                                        <div id="panorama-{{ unit.id }}" style="width:100%; height:400px;"></div>
+                                        <script>
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            // Only initialize the panorama for this specific unit
+                                            pannellum.viewer('panorama-{{ unit.id }}', {
+                                                "type": "equirectangular",
+                                                "panorama": "{{ unit.main_image.url }}"
+                                            });
                                         });
-                                    });
-                                    </script>
-                                {% endfor %}
-                              </div>
+                                        </script>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
                         </div>
+                        
                         <div class="units-card-body">
                             <h5 class="units-card-title">{{ unit.name }}</h5>
                             <h6 class="units-card-subtitle mb-2">₱{{ unit.monthly_price|floatformat:2 }}/month</h6>
@@ -174,9 +176,15 @@
                                 <button class="units-btn-outline btn btn-sm" data-bs-toggle="modal" data-bs-target="#unitModal{{ unit.id }}">
                                     View Details
                                 </button>
-                                <a href="{% url 'client_unit_detail' unit.id %}" class="units-btn-primary btn btn-sm">
-                                    Apply Now
-                                </a>
+                                {% if unit.is_occupied %}
+                                    <button class="units-btn-primary btn btn-sm" disabled>
+                                        Occupied
+                                    </button>
+                                {% else %}
+                                    <a href="{% url 'client_unit_detail' unit.id %}" class="units-btn-primary btn btn-sm">
+                                        Apply Now
+                                    </a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -217,7 +225,13 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <a href="{% url 'client_unit_detail' unit.id %}" class="units-btn-primary btn btn-sm">Apply Now</a>
+                                {% if unit.is_occupied %}
+                                    <button class="units-btn-primary btn btn-sm" disabled>
+                                        Occupied
+                                    </button>
+                                {% else %}
+                                    <a href="{% url 'client_unit_detail' unit.id %}" class="units-btn-primary btn btn-sm">Apply Now</a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

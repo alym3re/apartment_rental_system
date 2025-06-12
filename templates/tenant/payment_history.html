@@ -155,6 +155,7 @@
                         <tr>
                             <th>Date</th>
                             <th>Amount</th>
+                            <th>MOP</th>
                             <th>Status</th>
                             <th>Notes</th>
                             <th>Receipt</th>
@@ -165,6 +166,7 @@
                         <tr>
                             <td>{{ payment.payment_date|date:"M d, Y" }}</td>
                             <td>₱{{ payment.amount }}</td>
+                            <td>{{ payment.get_mode_of_payment_display }}</td>
                             <td>
                                 <span class="{% if payment.status == payment.APPROVED %}payment-history-badge-success{% elif payment.status == payment.REJECTED %}payment-history-badge-danger{% else %}payment-history-badge-warning{% endif %}">
                                     {{ payment.get_status_display }}

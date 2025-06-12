@@ -105,11 +105,29 @@ class Payment(models.Model):
         (REJECTED, 'Rejected'),
     )
     
+    CASH = 1
+    GCASH = 2
+    BANK_TRANSFER = 3
+    CHECK = 4
+    CREDIT_CARD = 5
+    
+    PAYMENT_MODE_CHOICES = (
+        (CASH, 'Cash'),
+        (GCASH, 'GCash'),
+        (BANK_TRANSFER, 'Bank Transfer'),
+        (CHECK, 'Check'),
+        (CREDIT_CARD, 'Credit Card'),
+    )
+    
     lease = models.ForeignKey(Lease, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     payment_date = models.DateField()
     receipt = models.FileField(upload_to='receipts/', blank=True, null=True)
     status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, default=PENDING)
+    mode_of_payment = models.PositiveSmallIntegerField(
+        choices=PAYMENT_MODE_CHOICES,
+        default=CASH
+    )
     notes = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
