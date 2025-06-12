@@ -80,7 +80,6 @@ class MessageForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        # If 'conversation' is passed, hide recipient and subject fields
         conversation = kwargs.get('initial', {}).get('conversation') or kwargs.get('instance', None) and getattr(kwargs['instance'], 'conversation', None)
         super().__init__(*args, **kwargs)
         if conversation:

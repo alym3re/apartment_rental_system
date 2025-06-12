@@ -1,20 +1,19 @@
 :root {
-    --charcoal: #3C3D42;         /* Headings, navbar, footer, dark buttons */
-    --kiwi-green: #9CCD62;       /* Primary buttons, highlights, status OK */
-    --soft-cream: #F6F8E2;       /* Page background, cards, modals */
-    --sage-beige: #E0DDCA;       /* Secondary UI, form backgrounds */
-    --cloud-white: #FFFFFF;      /* Card and section backgrounds */
-    --error-red: #D9534F;        /* Errors, delete buttons */
-    --sky-blue: #5BC0DE;         /* Info alerts, links */
-    --success-olive: #6BA539;    /* Approved status, confirmations */
-    --neutral-gray: #A9A9A9;     /* Disabled buttons, minor text */
+    --charcoal: #3C3D42;         
+    --kiwi-green: #9CCD62;       
+    --soft-cream: #F6F8E2;      
+    --sage-beige: #E0DDCA;    
+    --cloud-white: #FFFFFF;  
+    --error-red: #D9534F;   
+    --sky-blue: #5BC0DE;  
+    --success-olive: #6BA539;  
+    --neutral-gray: #A9A9A9;   
 }
 
 body {
     background-color: #f8f9fa;
 }
 
-/* Modern form input styles */
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -103,7 +102,6 @@ a {
     font-weight: 500;
 }
 
-/* Custom colors */
 .bg-primary {
     background-color: #4e73df !important;
 }
@@ -118,14 +116,12 @@ a {
     border-color: #3a5ccc;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .card-body {
         padding: 1.25rem;
     }
 }
 
-/* Custom shadow for cards */
 .shadow {
     box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
 }
@@ -134,35 +130,29 @@ a {
     box-shadow: 0 0.125rem 0.25rem 0 rgba(58, 59, 69, 0.2) !important;
 }
 
-/* Custom form styles */
 .form-control:focus {
     border-color: #4e73df;
     box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
 }
 
-/* Custom alert styles */
 .alert {
     border-radius: 0.35rem;
 }
 
-/* Custom button styles */
 .btn {
     border-radius: 0.35rem;
     padding: 0.5rem 1rem;
 }
 
-/* Custom table styles */
 .table-hover tbody tr:hover {
     background-color: rgba(78, 115, 223, 0.05);
 }
 
-/* Custom modal styles */
 .modal-content {
     border-radius: 0.5rem;
     border: none;
 }
 
-/* Custom footer styles */
 footer a {
     text-decoration: none;
 }

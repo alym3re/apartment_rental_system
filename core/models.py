@@ -147,7 +147,6 @@ class Announcement(models.Model):
     def __str__(self):
         return self.title
 
-# New Conversation model
 class Conversation(models.Model):
     subject = models.CharField(max_length=200)
     participants = models.ManyToManyField(User, related_name='conversations')

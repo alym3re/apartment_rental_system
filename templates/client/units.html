@@ -138,10 +138,8 @@
             {% for unit in units %}
                 <div class="col">
                     <div class="units-card h-100">
-                        <!-- 3D Panorama Viewer -->
                         <img id="fallback-img-{{ unit.id }}" src="{{ unit.main_image.url }}" class="units-card-img panorama-clickable" alt="{{ unit.name }}" style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#mainPanoramaModal{{ unit.id }}">
                         
-                        <!-- Main Panorama Modal -->
                         <div class="modal fade" id="mainPanoramaModal{{ unit.id }}" tabindex="-1" aria-labelledby="mainPanoramaModalLabel{{ unit.id }}" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-lg">
                                 <div class="modal-content">
@@ -150,11 +148,9 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <!-- Remove the for loop here and just show the current unit's panorama -->
                                         <div id="panorama-{{ unit.id }}" style="width:100%; height:400px;"></div>
                                         <script>
                                         document.addEventListener('DOMContentLoaded', function() {
-                                            // Only initialize the panorama for this specific unit
                                             pannellum.viewer('panorama-{{ unit.id }}', {
                                                 "type": "equirectangular",
                                                 "panorama": "{{ unit.main_image.url }}"
@@ -189,7 +185,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Unit Modal -->
                 <div class="modal fade" id="unitModal{{ unit.id }}" tabindex="-1" aria-labelledby="unitModalLabel{{ unit.id }}" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -200,7 +195,6 @@
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <!-- 3D Panorama Viewer in Modal -->
                                         <div id="modal-panorama-viewer-{{ unit.id }}" class="img-fluid rounded mb-3" style="height:250px;display:none;"></div>
                                         <img id="modal-fallback-img-{{ unit.id }}" src="{{ unit.main_image.url }}" class="img-fluid rounded mb-3" alt="{{ unit.name }}">
                                         <div class="row g-2">

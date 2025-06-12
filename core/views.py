@@ -159,7 +159,6 @@ def admin_application_detail(request, pk):
                 monthly_rent=application.unit.monthly_price,
                 is_active=True
             )
-            # Set unit status to OCCUPIED
             unit = application.unit
             unit.status = Unit.OCCUPIED
             unit.save()
@@ -208,7 +207,7 @@ def admin_announcements(request):
             announcement = form.save(commit=False)
             announcement.author = request.user
             announcement.save()
-            form.save_m2m()  # Save the many-to-many relationships
+            form.save_m2m() 
             messages.success(request, 'Announcement created successfully!')
             return redirect('admin_announcements')
     else:
@@ -237,7 +236,7 @@ def admin_message_detail(request, pk):
         if form.is_valid():
             reply = form.save(commit=False)
             reply.sender = request.user
-            reply.recipient = message.sender  # Reply to the original sender
+            reply.recipient = message.sender 
             reply.save()
             messages.success(request, 'Reply sent successfully!')
             return redirect('admin_message_detail', pk=pk)
@@ -255,7 +254,6 @@ def client_dashboard(request):
     if request.user.role != User.CLIENT:
         return redirect('dashboard')
     
-    # Check if user has any pending applications
     has_pending_application = Application.objects.filter(client=request.user, status=Application.PENDING).exists()
     
     context = {
@@ -264,7 +262,6 @@ def client_dashboard(request):
     return render(request, 'client/dashboard.html', context)
 
 def client_units(request):
-    # Get all units and annotate whether they're occupied
     units = Unit.objects.all().annotate(
         is_occupied=models.Exists(
             Lease.objects.filter(
@@ -329,10 +326,8 @@ def unit_availability_api(request):
     all_units = Unit.objects.filter(status=Unit.AVAILABLE)
     total_units = all_units.count()
 
-    # For each day, count available units (not leased)
     availability = []
     for day in days:
-        # Units with a lease covering this day
         leased_on_day = Lease.objects.filter(
             is_active=True,
             start_date__lte=day,
@@ -352,18 +347,14 @@ def tenant_dashboard(request):
     if request.user.role != User.TENANT:
         return redirect('dashboard')
     
-    # Get active lease
     lease = Lease.objects.filter(tenant=request.user, is_active=True).first()
     
-    # Check for upcoming payment due (assuming rent is due on the 1st of each month)
     today = timezone.now().date()
     next_payment_due = today.replace(day=1) + timedelta(days=32)
     next_payment_due = next_payment_due.replace(day=1)
     
-    # Check for unread messages
     unread_messages = Message.objects.filter(recipient=request.user, is_read=False).count()
     
-    # Check for new announcements
     new_announcements = Announcement.objects.filter(
         Q(is_global=True) | Q(recipients=request.user),
         created_at__gte=timezone.now() - timedelta(days=7)
@@ -477,7 +468,6 @@ def tenant_submit_payment(request):
             messages.success(request, 'Payment submitted successfully! It will be reviewed by the admin.')
             return redirect('tenant_payment_history')
     else:
-        # Suggest the monthly rent amount
         initial_data = {
             'amount': lease.monthly_rent,
             'payment_date': timezone.now().date(),
@@ -490,7 +480,6 @@ def tenant_submit_payment(request):
 def tenant_messages(request):
     if request.user.role != User.TENANT:
         return redirect('dashboard')
-    # List all admins and superusers as possible contacts
     conversation_users = User.objects.filter(models.Q(role=User.ADMIN) | models.Q(is_superuser=True))
     unread_counts = {u.id: Message.objects.filter(sender=u, recipient=request.user, is_read=False).count() for u in conversation_users}
     return render(request, 'messages/conversation_list.html', {
@@ -529,7 +518,6 @@ def tenant_announcement_detail(request, pk):
     
     announcement = get_object_or_404(Announcement, pk=pk)
     
-    # Check if user is allowed to view this announcement
     if not announcement.is_global and request.user not in announcement.recipients.all():
         messages.error(request, 'You are not authorized to view this announcement.')
         return redirect('tenant_announcements')
@@ -561,7 +549,6 @@ def tenant_leave_request(request):
             messages.success(request, 'Leave request submitted successfully!')
             return redirect('tenant_dashboard')
     else:
-        # Default to 30 days from now
         initial_data = {
             'requested_end_date': timezone.now().date() + timedelta(days=30),
         }
@@ -583,7 +570,6 @@ def profile(request):
     return render(request, 'accounts/profile.html', {'form': form})
 
 
-# Admin: Leave Requests Review
 @login_required
 @admin_required
 def admin_leave_requests(request):
@@ -593,20 +579,16 @@ def admin_leave_requests(request):
         leave_id = request.POST.get('leave_id')
         leave = get_object_or_404(LeaveRequest, id=leave_id)
         if action == 'accept' and leave.status == LeaveRequest.PENDING:
-            # Mark leave request as approved
             leave.status = LeaveRequest.APPROVED
             leave.processed_at = timezone.now()
             leave.save()
-            # Deactivate lease
             lease = leave.lease
             lease.is_active = False
             lease.end_date = leave.requested_end_date
             lease.save()
-            # Demote tenant to client
             tenant = leave.tenant
             tenant.role = User.CLIENT
             tenant.save()
-            # Mark unit as available
             unit = lease.unit
             unit.status = Unit.AVAILABLE
             unit.save()
@@ -619,7 +601,6 @@ def admin_leave_requests(request):
         return redirect('admin_leave_requests')
     return render(request, 'admin_panel/leave_requests.html', {'leave_requests': leave_requests})
 
-# Conversation-based messaging views
 @login_required
 def conversation_list(request):
     conversations = Conversation.objects.filter(participants=request.user).order_by('-updated_at')
@@ -634,7 +615,6 @@ def conversation_create(request):
             conversation.participants.add(request.user)
             for participant in form.cleaned_data['participants']:
                 conversation.participants.add(participant)
-            # Add initial message
             initial_message = request.POST.get('initial_message')
             if initial_message:
                 Message.objects.create(
@@ -653,7 +633,6 @@ def conversation_create(request):
 def conversation_thread(request, conversation_id):
     conversation = get_object_or_404(Conversation, id=conversation_id, participants=request.user)
     messages_qs = conversation.messages.order_by('created_at')
-    # Mark all received messages as read
     messages_qs.filter(recipient=request.user, is_read=False).update(is_read=True)
     if request.method == 'POST':
         form = MessageForm(request.POST, initial={'conversation': conversation.id})
@@ -661,12 +640,10 @@ def conversation_thread(request, conversation_id):
             msg = form.save(commit=False)
             msg.sender = request.user
             msg.conversation = conversation
-            # Set recipient as the other participant (for 2-person conversations)
             other_participants = conversation.participants.exclude(id=request.user.id)
             if other_participants.exists():
                 msg.recipient = other_participants.first()
             else:
-                # fallback: if only one participant, set recipient to self (should not happen)
                 msg.recipient = request.user
             msg.subject = conversation.subject
             msg.save()

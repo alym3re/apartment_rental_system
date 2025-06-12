@@ -6,14 +6,12 @@
 <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Make the main image clickable to open the modal
     var panoImg = document.getElementById('unit-detail-fallback-img');
     if (panoImg) {
         panoImg.style.cursor = 'pointer';
         panoImg.setAttribute('data-bs-toggle', 'modal');
         panoImg.setAttribute('data-bs-target', '#unitDetailPanoramaModal');
     }
-    // Modal panorama for main image (Pannellum)
     var mainModal = document.getElementById('unitDetailPanoramaModal');
     var pannellumViewer = null;
     if (mainModal) {
@@ -143,10 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="unit-detail-body">
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <!-- 3D Panorama Viewer -->
-                        <!-- 3D Panorama Viewer (clickable) -->
                         <img id="unit-detail-fallback-img" src="{{ unit.main_image.url }}" class="unit-detail-img" alt="{{ unit.name }}">
-                        <!-- Modal for 3D Panorama -->
                         <div class="modal fade" id="unitDetailPanoramaModal" tabindex="-1" aria-labelledby="unitDetailPanoramaModalLabel" aria-hidden="true">
                           <div class="modal-dialog modal-dialog-centered modal-lg">
                             <div class="modal-content">
