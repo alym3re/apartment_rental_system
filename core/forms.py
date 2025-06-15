@@ -8,7 +8,7 @@ from .models import *
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
     phone_number = forms.CharField(max_length=20, required=False)
-    facebook_account = forms.URLField(required=False)
+    facebook_account = forms.CharField(max_length=100, required=False)
     address = forms.CharField(widget=forms.Textarea, required=False)
     occupation = forms.CharField(max_length=100, required=False)
     

@@ -1,7 +1,7 @@
 :root {
     --charcoal: #3C3D42;         
     --kiwi-green: #9CCD62;       
-    --soft-cream: #F6F8E2;      
+    --soft-cream: #F6F8E2;  
     --sage-beige: #E0DDCA;    
     --cloud-white: #FFFFFF;  
     --error-red: #D9534F;   
@@ -10,9 +10,7 @@
     --neutral-gray: #A9A9A9;   
 }
 
-body {
-    background-color: #f8f9fa;
-}
+
 
 input[type="text"],
 input[type="email"],

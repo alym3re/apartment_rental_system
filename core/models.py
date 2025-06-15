@@ -16,7 +16,7 @@ class User(AbstractUser):
     
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, default=CLIENT)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
-    facebook_account = models.URLField(blank=True, null=True)
+    facebook_account = models.CharField(max_length=100, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
     occupation = models.CharField(max_length=100, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)

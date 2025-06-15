@@ -3,13 +3,20 @@
 {% block title %}Northside Avenue Online Apartment Rental{% endblock %}
 
 {% block content %}
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
+    body {
+        background: 
+            linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0.3)),
+            #f8f9fa url('static/bg2.jpg') no-repeat center center fixed !important;
+        background-size: cover !important;
+    }
     body, .container, .card, .btn, h1, h2, h5, p, a {
         font-family: 'Poppins', Arial, sans-serif !important;
     }
     .revamp-hero {
-        background: var(--soft-cream);
+        background: rgba(246, 248, 226, 0.8);
         border-radius: 24px;
         box-shadow: 0 4px 24px 0 rgba(60, 61, 66, 0.10);
         padding: 3rem 2rem;
@@ -50,7 +57,7 @@
         color: var(--kiwi-green);
     }
     .revamp-feature-card {
-        background: var(--cloud-white);
+        background: rgba(255, 255, 255, 0.8);
         border-radius: 18px;
         box-shadow: 0 2px 16px 0 rgba(60, 61, 66, 0.10);
         border: none;
@@ -104,6 +111,7 @@
     }
 </style>
 <div class="container py-4">
+    
     <div class="revamp-hero">
         <div class="row align-items-center">
             <div class="col-lg-12 text-center">

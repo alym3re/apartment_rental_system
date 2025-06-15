@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
-<body class="d-flex flex-column min-vh-100" style="background-color: var(--bg-color); color: var(--text-color);">
+<body class="d-flex flex-column min-vh-100">
+    
     {% include 'partials/_navbar.html' %}
     
     <main class="container my-4 flex-grow-1" style="background-color: var(--card-bg); color: var(--text-color); border-radius: 1rem; box-shadow: 0 0.15rem 1.75rem 0 rgba(44,44,44,0.05);">
